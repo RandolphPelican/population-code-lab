@@ -28,8 +28,7 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
 #top-bar{display:flex;align-items:center;justify-content:space-between;padding:7px 16px;flex-shrink:0;background:var(--bg2);border-bottom:1px solid var(--border)}
 .brand-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:var(--gold);letter-spacing:.05em}
 .brand-sub{font-size:9px;color:var(--dim);letter-spacing:.07em;margin-top:1px}
-.brand-sub a{color:var(--a2);text-decoration:none}
-.brand-sub a:hover{text-decoration:underline}
+.brand-sub a{color:var(--a2);text-decoration:none}.brand-sub a:hover{text-decoration:underline}
 .top-right{display:flex;gap:8px;align-items:center}
 .pill{font-size:9px;letter-spacing:.1em;border:1px solid;padding:3px 9px;cursor:pointer;transition:all .15s;font-family:'Space Mono',monospace}
 .pill-accent{color:var(--a2);border-color:rgba(124,242,198,.3)}.pill-accent:hover{background:rgba(124,242,198,.08);border-color:var(--a2)}
@@ -73,7 +72,7 @@ select:focus{border-color:var(--accent)}
 .tip{position:relative}
 .tip::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 5px);left:50%;transform:translateX(-50%);background:var(--bg3);color:var(--text);font-size:9px;padding:5px 9px;white-space:nowrap;z-index:500;border:1px solid var(--border);pointer-events:none;opacity:0;transition:opacity .15s}
 .tip:hover::after{opacity:1}
-.mc{flex:1;padding:7px 8px;background:var(--panel);cursor:default;position:relative;overflow:hidden;transition:background .2s}
+.mc{flex:1;padding:7px 10px 10px;background:var(--panel);position:relative;overflow:hidden;cursor:default;transition:background .15s;min-width:0}
 .mc:hover{background:var(--panel2)}
 .mc::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .4s ease}
 .mc.flash::after{transform:scaleX(1)}
@@ -93,8 +92,7 @@ select:focus{border-color:var(--accent)}
 .regime{padding:2px 8px;font-family:'Syne',sans-serif;font-size:9px;font-weight:700;letter-spacing:.1em;color:var(--gold);border:1px solid var(--gold2)}
 #state-bar .sp{flex:1}
 .pref{font-size:8px;color:var(--dim)}
-.pref a{color:var(--accent);text-decoration:none}
-.pref a:hover{text-decoration:underline}
+.pref a{color:var(--accent);text-decoration:none}.pref a:hover{text-decoration:underline}
 #charts{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:1px;background:var(--bg0);overflow:hidden;min-height:0}
 .cp{background:var(--panel);display:flex;flex-direction:column;overflow:hidden}
 .ch{padding:5px 10px;flex-shrink:0;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:9px;color:var(--dim);letter-spacing:.1em;text-transform:uppercase}
@@ -114,11 +112,9 @@ select:focus{border-color:var(--accent)}
 #compare-table{width:100%;border-collapse:collapse;font-size:9px}
 #compare-table th{padding:5px 10px;background:var(--bg2);color:var(--a2);font-weight:700;border-bottom:1px solid var(--border);text-align:left;position:sticky;top:0}
 #compare-table td{padding:4px 10px;border-bottom:1px solid rgba(26,58,85,.3);color:var(--text)}
-#compare-table td.better{color:var(--a2)}
-#compare-table td.worse{color:var(--red)}
+#compare-table td.better{color:var(--a2)}#compare-table td.worse{color:var(--red)}
 #status-bar{position:fixed;bottom:0;left:272px;right:0;height:22px;background:rgba(2,12,20,.95);border-top:1px solid var(--border);display:flex;align-items:center;padding:0 13px;gap:16px;z-index:800;font-size:9px}
-.sbi{color:var(--dim)}.sbi span{color:var(--a2)}
-.sbi.right{margin-left:auto}
+.sbi{color:var(--dim)}.sbi span{color:var(--a2)}.sbi.right{margin-left:auto}
 </style>
 </head>
 <body>
@@ -127,24 +123,24 @@ select:focus{border-color:var(--accent)}
   <div class="intro-inner">
     <div class="intro-studio">Randolph Pelican III</div>
     <div class="intro-presents">presents</div>
-    <div class="intro-lion">🦁</div>
+    <div class="intro-lion">&#x1F981;</div>
     <div class="intro-title">Population<br><em>Code Lab</em></div>
-    <div class="intro-sub">Neural Geometry &nbsp;·&nbsp; Information Theory &nbsp;·&nbsp; Representational Dynamics</div>
+    <div class="intro-sub">Neural Geometry &nbsp;&middot;&nbsp; Information Theory &nbsp;&middot;&nbsp; Representational Dynamics</div>
   </div>
-  <div class="intro-skip">[&nbsp;SKIP&nbsp;]</div>
+  <div class="intro-skip">[ SKIP ]</div>
 </div>
 <div id="app">
   <div id="top-bar">
     <div>
-      <div class="brand-name">⬡ POPULATION CODE LAB</div>
-      <div class="brand-sub"><a href="https://github.com/RandolphPelican/population-code-lab" target="_blank">RandolphPelican</a> &nbsp;·&nbsp; Neural Geometry Sandbox v1.0</div>
+      <div class="brand-name">&#x2B21; POPULATION CODE LAB</div>
+      <div class="brand-sub"><a href="https://github.com/RandolphPelican/population-code-lab" target="_blank">RandolphPelican</a> &nbsp;&middot;&nbsp; Neural Geometry Sandbox v1.1</div>
     </div>
     <div class="top-right">
-      <div class="pill pill-dim" onclick="loadPreset()">⊞ PRESETS</div>
-      <div class="pill pill-dim" onclick="saveScenario()">⊕ SAVE</div>
-      <div class="pill pill-dim" onclick="loadScenario()">⊙ LOAD</div>
-      <div class="pill pill-accent" onclick="shareURL()">⬡ SHARE</div>
-      <div class="pill pill-gold" onclick="exportJSON()">⬇ EXPORT</div>
+      <div class="pill pill-dim" onclick="loadPreset()">&#x229E; PRESETS</div>
+      <div class="pill pill-dim" onclick="saveScenario()">&#x2295; SAVE</div>
+      <div class="pill pill-dim" onclick="loadScenario()">&#x2299; LOAD</div>
+      <div class="pill pill-accent" onclick="shareURL()">&#x2B21; SHARE</div>
+      <div class="pill pill-gold" onclick="exportJSON()">&#x2B07; EXPORT</div>
     </div>
   </div>
   <div id="body-row">
@@ -161,67 +157,63 @@ select:focus{border-color:var(--accent)}
           <div class="sl"><div class="sl-row"><span class="sl-name">N Neurons</span><span class="sl-val" id="vn">100</span></div><input type="range" id="sn" min="10" max="500" step="10" value="100" oninput="sp('n',+this.value,'vn',v=>Math.round(v))"></div>
           <div class="sl"><div class="sl-row"><span class="sl-name">Signal Strength ss</span><span class="sl-val" id="vsig">2.00</span></div><input type="range" id="ssig" min="0.1" max="5.0" step="0.05" value="2.0" oninput="sp('sig',+this.value,'vsig',v=>v.toFixed(2))"></div>
           <div class="sl"><div class="sl-row"><span class="sl-name">Tuning Width sp</span><span class="sl-val" id="vpref">15</span></div><input type="range" id="spref" min="2" max="60" step="1" value="15" oninput="sp('pref',+this.value,'vpref',v=>Math.round(v))"></div>
-          <div class="sl"><div class="sl-row"><span class="sl-name">Sparseness Index</span><span class="sl-val" id="vsparse">0.50</span></div><input type="range" id="ssparse" min="0.0" max="1.0" step="0.01" value="0.5" oninput="sp('sparse',+this.value,'vsparse',v=>v.toFixed(2))"></div>
-          <div class="sl"><div class="sl-row"><span class="sl-name">Fano Factor</span><span class="sl-val" id="vfano">1.00</span></div><input type="range" id="sfano" min="0.1" max="3.0" step="0.05" value="1.0" oninput="sp('fano',+this.value,'vfano',v=>v.toFixed(2))"></div>
-          <div class="sl-row" style="margin-bottom:4px"><span class="sl-name" style="font-size:9px;color:var(--dim)">Tuning Family</span></div>
-          <select id="stuning" onchange="P.tuning=this.value;compute()"><option value="gaussian" selected>Gaussian</option><option value="vonmises">Von Mises</option><option value="sigmoid">Sigmoid</option><option value="cosine">Cosine</option><option value="heterogeneous">Heterogeneous</option></select>
-          <div class="sl-row" style="margin:6px 0 4px"><span class="sl-name" style="font-size:9px;color:var(--dim)">Manifold Topology</span></div>
-          <select id="smanifold" onchange="P.manifold=this.value;compute()"><option value="linear" selected>Linear R1</option><option value="circular">Circular S1</option><option value="toroidal">Toroidal T2</option></select>
-          <div class="sec">Stimulus Space</div>
-          <div class="sl"><div class="sl-row"><span class="sl-name">Dimensionality d</span><span class="sl-val" id="vdim">8</span></div><input type="range" id="sdim" min="1" max="50" step="1" value="8" oninput="sp('dim',+this.value,'vdim',v=>Math.round(v))"></div>
-          <div class="sl"><div class="sl-row"><span class="sl-name">Stimulus Set Ns</span><span class="sl-val" id="vns">8</span></div><input type="range" id="sns" min="2" max="32" step="1" value="8" oninput="sp('ns',+this.value,'vns',v=>Math.round(v))"></div>
-          <div class="sl"><div class="sl-row"><span class="sl-name">Mux Load m</span><span class="sl-val" id="vmux">1</span></div><input type="range" id="smux" min="1" max="8" step="1" value="1" oninput="sp('mux',+this.value,'vmux',v=>Math.round(v))"></div>
-          <div class="sec">Gain and Modulation</div>
-          <div class="sl"><div class="sl-row"><span class="sl-name">Attention Gain g</span><span class="sl-val" id="vgain">1.00</span></div><input type="range" id="sgain" min="1.0" max="10.0" step="0.1" value="1.0" oninput="sp('gain',+this.value,'vgain',v=>v.toFixed(2))"></div>
-          <div class="sl"><div class="sl-row"><span class="sl-name">Gain Heterogeneity</span><span class="sl-val" id="vgainhet">0.00</span></div><input type="range" id="sgainhet" min="0.0" max="1.0" step="0.01" value="0.0" oninput="sp('gainhet',+this.value,'vgainhet',v=>v.toFixed(2))"></div>
-          <div class="sec">Estimation</div>
-          <div class="sl"><div class="sl-row"><span class="sl-name">N Trials</span><span class="sl-val" id="vtrials">500</span></div><input type="range" id="strials" min="50" max="2000" step="50" value="500" oninput="sp('trials',+this.value,'vtrials',v=>Math.round(v))"></div>
-          <div class="sl"><div class="sl-row"><span class="sl-name">N Bootstrap</span><span class="sl-val" id="vboot">200</span></div><input type="range" id="sboot" min="50" max="500" step="50" value="200" oninput="sp('boot',+this.value,'vboot',v=>Math.round(v))"></div>
-          <div class="sl"><div class="sl-row"><span class="sl-name">MI Bins</span><span class="sl-val" id="vbins">20</span></div><input type="range" id="sbins" min="5" max="50" step="1" value="20" oninput="sp('bins',+this.value,'vbins',v=>Math.round(v))"></div>
-          <div class="sl"><div class="sl-row"><span class="sl-name">Nav Threshold theta</span><span class="sl-val" id="vthresh">1.00</span></div><input type="range" id="sthresh" min="0.5" max="3.0" step="0.05" value="1.0" oninput="sp('thresh',+this.value,'vthresh',v=>v.toFixed(2))"></div>
-          <div class="btn-row"><button class="btn" onclick="logRun()">+ LOG RUN</button><button class="btn gold" onclick="validateSysA()">SYS A</button><button class="btn gold" onclick="validateSysB()">SYS B</button></div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">Sparseness</span><span class="sl-val" id="vsparse">0.50</span></div><input type="range" id="ssparse" min="0.0" max="1.0" step="0.01" value="0.5" oninput="sp('sparse',+this.value,'vsparse',v=>v.toFixed(2))"></div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">Num Stimuli</span><span class="sl-val" id="vns">8</span></div><input type="range" id="sns" min="2" max="16" step="1" value="8" oninput="sp('ns',+this.value,'vns',v=>Math.round(v))"></div>
+          <div class="sec">Noise Stats</div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">Bootstrap Samples</span><span class="sl-val" id="vboot">200</span></div><input type="range" id="sboot" min="50" max="500" step="50" value="200" oninput="sp('boot',+this.value,'vboot',v=>Math.round(v))"></div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">Trials</span><span class="sl-val" id="vtrials">500</span></div><input type="range" id="strials" min="50" max="2000" step="50" value="500" oninput="sp('trials',+this.value,'vtrials',v=>Math.round(v))"></div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">Nav Threshold</span><span class="sl-val" id="vthresh">1.00</span></div><input type="range" id="sthresh" min="0.1" max="3.0" step="0.05" value="1.0" oninput="sp('thresh',+this.value,'vthresh',v=>v.toFixed(2))"></div>
+          <div class="btn-row"><button class="btn gold" onclick="logRun()">LOG RUN</button></div>
         </div>
         <div id="tab-noise" class="tab-panel">
-          <div class="sec">Noise Model</div>
-          <div class="sl-row" style="margin-bottom:4px"><span class="sl-name" style="font-size:9px;color:var(--dim)">Noise Type</span></div>
-          <select id="snoisetype" onchange="P.noisetype=this.value;compute()"><option value="poisson">Independent Poisson</option><option value="gaussian" selected>Independent Gaussian</option><option value="correlated">Correlated Gaussian</option><option value="multiplicative">Multiplicative</option><option value="ei_network">E/I Network Vogels 2011</option></select>
-          <div class="sl" style="margin-top:8px"><div class="sl-row"><span class="sl-name">Noise Magnitude sn</span><span class="sl-val" id="vnoise">1.00</span></div><input type="range" id="snoise" min="0.1" max="5.0" step="0.05" value="1.0" oninput="sp('noise',+this.value,'vnoise',v=>v.toFixed(2))"></div>
-          <div class="sec">Correlation Structure</div>
-          <div id="warn-indep" class="warn-banner">Warning: Independence assumption may be invalid</div>
-          <div class="sl"><div class="sl-row"><span class="sl-name">Noise Alignment alpha</span><span class="sl-val" id="valign">0.20</span></div><input type="range" id="salign" min="0.0" max="1.0" step="0.01" value="0.2" oninput="sp('align',+this.value,'valign',v=>v.toFixed(2))"></div>
-          <div class="sl"><div class="sl-row"><span class="sl-name">Global Corr rho</span><span class="sl-val" id="vrho">0.10</span></div><input type="range" id="srho" min="0.0" max="0.8" step="0.01" value="0.1" oninput="sp('rho',+this.value,'vrho',v=>v.toFixed(2))"></div>
-          <div class="sl"><div class="sl-row"><span class="sl-name">Diff Corr Magnitude</span><span class="sl-val" id="vdiffcorr">0.00</span></div><input type="range" id="sdiffcorr" min="0.0" max="1.0" step="0.01" value="0.0" oninput="sp('diffcorr',+this.value,'vdiffcorr',v=>v.toFixed(2))"></div>
-          <div class="sl"><div class="sl-row"><span class="sl-name">Shared Factors k</span><span class="sl-val" id="vfactors">1</span></div><input type="range" id="sfactors" min="1" max="10" step="1" value="1" oninput="sp('factors',+this.value,'vfactors',v=>Math.round(v))"></div>
-          <div class="sl"><div class="sl-row"><span class="sl-name">Ltd-Range lambda</span><span class="sl-val" id="vlambda">0.30</span></div><input type="range" id="slambda" min="0.05" max="1.0" step="0.05" value="0.3" oninput="sp('lambda',+this.value,'vlambda',v=>v.toFixed(2))"></div>
-          <div class="sec">Non-Stationary</div>
-          <div class="chk-row"><input type="checkbox" id="cbnonstat" onchange="document.getElementById('nonstat-controls').style.display=this.checked?'block':'none';P.nonstat=this.checked;compute()"><label for="cbnonstat">Enable Non-Stationary Mode</label></div>
-          <div id="nonstat-controls" style="display:none">
-            <div class="sl-row" style="margin-bottom:4px"><span class="sl-name" style="font-size:9px;color:var(--dim)">Drift Process</span></div>
-            <select id="sdrifttype" onchange="P.drifttype=this.value;compute()"><option value="ar1">AR(1) autoregressive</option><option value="ou">Ornstein-Uhlenbeck</option><option value="remap">Abrupt remapping</option><option value="oscillatory">Oscillatory alignment</option></select>
-            <div style="margin-top:6px">
-              <div class="sl"><div class="sl-row"><span class="sl-name">N Epochs</span><span class="sl-val" id="vepochs">20</span></div><input type="range" id="sepochs" min="2" max="50" step="1" value="20" oninput="sp('epochs',+this.value,'vepochs',v=>Math.round(v))"></div>
-              <div class="sl"><div class="sl-row"><span class="sl-name">AR(1) phi</span><span class="sl-val" id="vphi">0.80</span></div><input type="range" id="sphi" min="0.0" max="0.99" step="0.01" value="0.8" oninput="sp('phi',+this.value,'vphi',v=>v.toFixed(2))"></div>
-              <div class="sl"><div class="sl-row"><span class="sl-name">OU Volatility</span><span class="sl-val" id="vouv">0.10</span></div><input type="range" id="souv" min="0.01" max="1.0" step="0.01" value="0.1" oninput="sp('ouv',+this.value,'vouv',v=>v.toFixed(2))"></div>
-              <div class="sl"><div class="sl-row"><span class="sl-name">Remap Fraction</span><span class="sl-val" id="vremap">0.20</span></div><input type="range" id="sremap" min="0.0" max="1.0" step="0.05" value="0.2" oninput="sp('remap',+this.value,'vremap',v=>v.toFixed(2))"></div>
-            </div>
-            <div style="font-size:9px;color:var(--dim);margin:4px 0 5px">Drift Templates:</div>
-            <div class="btn-row">
-              <button class="btn" onclick="applyDriftTemplate('stable')">Stable</button>
-              <button class="btn" onclick="applyDriftTemplate('hippocampal')">Hippo</button>
-              <button class="btn" onclick="applyDriftTemplate('motor')">Motor</button>
-              <button class="btn" onclick="applyDriftTemplate('theta')">Theta</button>
-            </div>
+          <div class="sec">Noise Architecture</div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">Noise Level sn</span><span class="sl-val" id="vnoise">1.00</span></div><input type="range" id="snoise" min="0.1" max="5.0" step="0.05" value="1.0" oninput="sp('noise',+this.value,'vnoise',v=>v.toFixed(2))"></div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">Noise Align alpha</span><span class="sl-val" id="valign">0.20</span></div><input type="range" id="salign" min="0" max="1" step="0.01" value="0.2" oninput="sp('align',+this.value,'valign',v=>v.toFixed(2))"></div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">Global Corr rho</span><span class="sl-val" id="vrho">0.10</span></div><input type="range" id="srho" min="0" max="0.8" step="0.01" value="0.1" oninput="sp('rho',+this.value,'vrho',v=>v.toFixed(2))"></div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">Diff Corr</span><span class="sl-val" id="vdiffcorr">0.00</span></div><input type="range" id="sdiffcorr" min="0" max="1" step="0.01" value="0" oninput="sp('diffcorr',+this.value,'vdiffcorr',v=>v.toFixed(2))"></div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">Fano Factor</span><span class="sl-val" id="vfano">1.00</span></div><input type="range" id="sfano" min="0.5" max="3.0" step="0.05" value="1.0" oninput="sp('fano',+this.value,'vfano',v=>v.toFixed(2))"></div>
+          <div class="sec">Non-Stationary Dynamics</div>
+          <div class="chk-row"><input type="checkbox" id="cbnonstat" onchange="P.nonstat=this.checked;compute()"><label for="cbnonstat">Enable drift</label></div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">AR(1) phi</span><span class="sl-val" id="vphi">0.80</span></div><input type="range" id="sphi" min="0" max="0.99" step="0.01" value="0.8" oninput="sp('phi',+this.value,'vphi',v=>v.toFixed(2))"></div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">OU Volatility</span><span class="sl-val" id="vouv">0.10</span></div><input type="range" id="souv" min="0" max="0.5" step="0.01" value="0.1" oninput="sp('ouv',+this.value,'vouv',v=>v.toFixed(2))"></div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">Remapping Rate</span><span class="sl-val" id="vremap">0.20</span></div><input type="range" id="sremap" min="0" max="0.5" step="0.01" value="0.2" oninput="sp('remap',+this.value,'vremap',v=>v.toFixed(2))"></div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">Epochs</span><span class="sl-val" id="vepochs">20</span></div><input type="range" id="sepochs" min="5" max="50" step="1" value="20" oninput="sp('epochs',+this.value,'vepochs',v=>Math.round(v))"></div>
+          <div class="sec">Drift Type</div>
+          <select id="sdrifttype" onchange="P.drifttype=this.value;compute()">
+            <option value="ar1">AR(1)</option><option value="ou">Ornstein-Uhlenbeck</option>
+            <option value="remap">Remapping</option><option value="oscillatory">Oscillatory (theta)</option>
+          </select>
+          <div class="sec">Drift Templates</div>
+          <div class="btn-row">
+            <button class="btn" onclick="applyDriftTemplate('stable')">Stable</button>
+            <button class="btn" onclick="applyDriftTemplate('hippocampal')">HPC</button>
           </div>
+          <div class="btn-row">
+            <button class="btn" onclick="applyDriftTemplate('motor')">Motor</button>
+            <button class="btn" onclick="applyDriftTemplate('theta')">Theta</button>
+          </div>
+          <div id="drift-warn" class="warn-banner" style="margin-top:6px"></div>
+          <div class="sec">Attn / Mux</div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">Attn Gain</span><span class="sl-val" id="vgain">1.00</span></div><input type="range" id="sgain" min="0.5" max="4.0" step="0.05" value="1.0" oninput="sp('gain',+this.value,'vgain',v=>v.toFixed(2))"></div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">Mux Load</span><span class="sl-val" id="vmux">1</span></div><input type="range" id="smux" min="1" max="8" step="1" value="1" oninput="sp('mux',+this.value,'vmux',v=>Math.round(v))"></div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">Dimensionality</span><span class="sl-val" id="vdim">8</span></div><input type="range" id="sdim" min="1" max="50" step="1" value="8" oninput="sp('dim',+this.value,'vdim',v=>Math.round(v))"></div>
         </div>
         <div id="tab-decode" class="tab-panel">
           <div class="sec">Decoder</div>
-          <select id="sdecoder" onchange="P.decoder=this.value;compute()"><option value="lda" selected>Linear LDA</option><option value="ml">Maximum Likelihood</option><option value="popvec">Population Vector</option><option value="bayes">Bayesian Optimal</option><option value="knn">k-NN</option><option value="rbf">RBF Kernel SVM</option><option value="dyensemble">DyEnsemble adaptive</option><option value="gpmd">GPMD Gaussian Process</option></select>
+          <select id="sdecoder" onchange="P.decoder=this.value;compute()">
+            <option value="lda" selected>Linear LDA</option><option value="ml">Maximum Likelihood</option>
+            <option value="popvec">Population Vector</option><option value="bayes">Bayesian Optimal</option>
+            <option value="knn">k-NN</option><option value="rbf">RBF Kernel SVM</option>
+            <option value="dyensemble">DyEnsemble adaptive</option><option value="gpmd">GPMD Gaussian Process</option>
+          </select>
           <div class="sec">Training</div>
           <div class="sl"><div class="sl-row"><span class="sl-name">Train/Test Split</span><span class="sl-val" id="vsplit">0.80</span></div><input type="range" id="ssplit" min="0.5" max="0.95" step="0.05" value="0.8" oninput="sp('split',+this.value,'vsplit',v=>v.toFixed(2))"></div>
-          <div class="sl"><div class="sl-row"><span class="sl-name">k-fold CV</span><span class="sl-val" id="vcv">5</span></div><input type="range" id="scv" min="2" max="10" step="1" value="5" oninput="sp('cv',+this.value,'vcv',v=>Math.round(v))"></div>
           <div class="chk-row"><input type="checkbox" id="cbceiling" checked onchange="P.ceiling=this.checked;compute()"><label for="cbceiling">Compute noise ceiling</label></div>
           <div class="sec">Optimization Target</div>
-          <select id="soptimtarget" onchange="P.optimtarget=this.value"><option value="K" selected>K coherent info fraction</option><option value="FI">Fisher Information</option><option value="MI">Mutual Information</option></select>
+          <select id="soptimtarget" onchange="P.optimtarget=this.value">
+            <option value="K" selected>K coherent info fraction</option>
+            <option value="FI">Fisher Information</option><option value="MI">Mutual Information</option>
+          </select>
           <div style="font-size:9px;color:var(--dim);margin-top:4px;line-height:1.7">Joint ascent on tuning params and noise structure. Cap 50 epochs.</div>
           <div class="sec">Presets from Literature</div>
           <div class="btn-row">
@@ -245,7 +237,7 @@ select:focus{border-color:var(--accent)}
             <select id="hm-y"><option value="sig" selected>Signal ss</option><option value="n">N Neurons</option><option value="noise">Noise sn</option><option value="align">Noise Align alpha</option><option value="dim">Dimensionality</option><option value="gain">Attn Gain</option><option value="mux">Mux Load</option><option value="rho">Global rho</option><option value="diffcorr">Diff Corr</option></select>
           </div>
           <div class="sel-row"><span class="sel-lbl">Z:</span>
-            <select id="hm-z"><option value="K" selected>K Coherent Info</option><option value="FI">Fisher Information</option><option value="MI">Raw MI</option><option value="bcMI">Bias-corrected MI</option><option value="CC">Channel Capacity</option><option value="PR">Participation Ratio</option><option value="navFrac">Navigable Fraction</option><option value="acc">Decode Accuracy</option><option value="DCI">Diff Corr Index</option></select>
+            <select id="hm-z"><option value="K" selected>K Coherent Info</option><option value="FI">Fisher Information</option><option value="rawMI">Raw MI</option><option value="bcMI">Bias-corrected MI</option><option value="CC">Channel Capacity</option><option value="PR">Participation Ratio</option><option value="navFrac">Navigable Fraction</option><option value="acc">Decode Accuracy</option><option value="DCI">Diff Corr Index</option></select>
           </div>
           <div class="sl"><div class="sl-row"><span class="sl-name">Resolution</span><span class="sl-val" id="vres">15</span></div><input type="range" id="sres" min="5" max="25" step="1" value="15" oninput="sp('res',+this.value,'vres',v=>Math.round(v))"></div>
           <div class="btn-row"><button class="btn gold" onclick="runSweep()">RUN SWEEP</button></div>
@@ -261,8 +253,9 @@ select:focus{border-color:var(--accent)}
           </div>
           <div class="btn-row">
             <button class="btn purple" onclick="exportPython()">Python stub</button>
-            <button class="btn danger" onclick="clearLog()">CLR LOG</button>
+            <button class="btn green" onclick="exportParquet()">Parquet</button>
           </div>
+          <div class="btn-row"><button class="btn danger" onclick="clearLog()">CLR LOG</button></div>
           <div class="sec" style="margin-top:10px">Validation 2.5</div>
           <table style="width:100%;font-size:9px;border-collapse:collapse;color:var(--dim);line-height:1.9">
             <tr><td></td><td style="color:var(--a2)">Sys A a=0</td><td style="color:var(--gold)">Sys B a=1</td></tr>
@@ -281,19 +274,18 @@ select:focus{border-color:var(--accent)}
         <div class="mc tip" data-tip="K = I_nav / H_max — Stabler 2026"><div class="ml">K Coherent Info</div><div class="mv gold" id="mv-K">-</div><div class="mci" id="ci-K"></div><div class="k-bar"><div class="k-bar-fill" id="kfill" style="width:0%"></div></div></div>
         <div class="mc tip" data-tip="Raw MI = 0.5 log2(1+SNR) — Panzeri 1996"><div class="ml">Raw MI</div><div class="mv" id="mv-MI">-</div><div class="mci" id="ci-MI"></div><div class="mu">bits</div></div>
         <div class="mc tip" data-tip="Bias-corrected MI — Panzeri 2007"><div class="ml">BC-MI</div><div class="mv" id="mv-bcMI">-</div><div class="mu">bits</div></div>
-        <div class="mc tip" data-tip="Nav MI = navFrac x rawMI — Stabler 2026 2.2"><div class="ml">Navigable MI</div><div class="mv green" id="mv-nMI">-</div><div class="mu">bits</div></div>
+        <div class="mc tip" data-tip="Nav MI = navFrac x rawMI — Stabler 2026"><div class="ml">Navigable MI</div><div class="mv green" id="mv-nMI">-</div><div class="mu">bits</div></div>
         <div class="mc tip" data-tip="J = f Sigma-1 f — Seung 1993"><div class="ml">Fisher Info</div><div class="mv" id="mv-FI">-</div><div class="mci" id="ci-FI"></div></div>
         <div class="mc tip" data-tip="CC = 0.5 log2(1+J/d) — Shannon"><div class="ml">Channel Cap</div><div class="mv" id="mv-CC">-</div><div class="mu">bits</div></div>
-        <div class="mc tip" data-tip="PR = (sum L)^2 / sum L^2 — Gao 2017"><div class="ml">Partic Ratio</div><div class="mv" id="mv-PR">-</div><div class="mci" id="ci-PR"></div></div>
-        <div class="mc tip" data-tip="P(conf > 95th pctile null) — 2.2"><div class="ml">Nav Fraction</div><div class="mv" id="mv-navF">-</div></div>
-        <div class="mc tip" data-tip="normCDF(d prime) calibrated — 2.5"><div class="ml">Accuracy</div><div class="mv green" id="mv-acc">-</div><div class="mci" id="ci-acc"></div><div class="mu">%</div></div>
+        <div class="mc tip" data-tip="PR = (sum L)^2 / sum L^2 — Gao 2017"><div class="ml">Partic Ratio</div><div class="mv" id="mv-PR">-</div></div>
+        <div class="mc tip" data-tip="P(conf > 95th pctile null) — Sec 2.2"><div class="ml">Nav Fraction</div><div class="mv" id="mv-navF">-</div></div>
+        <div class="mc tip" data-tip="normCDF(d prime) calibrated — Sec 2.5"><div class="ml">Accuracy</div><div class="mv green" id="mv-acc">-</div><div class="mci" id="ci-acc"></div><div class="mu">%</div></div>
         <div class="mc tip" data-tip="Noise onto signal manifold — Moreno-Bote 2014"><div class="ml">Diff Corr Idx</div><div class="mv" id="mv-dci">-</div></div>
         <div class="mc tip" data-tip="Noiseless upper bound — Nili 2014"><div class="ml">Noise Ceiling</div><div class="mv" id="mv-ceil">-</div><div class="mu">%</div></div>
       </div>
       <div id="diag-bar">
-        <div class="diag-item"><span>!</span><span id="diag-indep">Correlation entropy check</span></div>
+        <div class="diag-item"><span>!</span><span id="diag-indep">Correlation entropy low — check noise independence</span></div>
         <div class="diag-item" id="diag-infolimit" style="display:none"><span>X</span><span>Info-limiting regime — FI overestimates (Moreno-Bote 2014)</span></div>
-        <div class="diag-item" id="diag-singular" style="display:none"><span>*</span><span>Sigma regularized (epsilon I added)</span></div>
       </div>
       <div id="state-bar">
         <div class="si"><span class="sl2">s2TASK:</span><span class="sv" id="sv-st">-</span></div>
@@ -302,7 +294,7 @@ select:focus{border-color:var(--accent)}
         <div class="si"><span class="sl2">H_CORR:</span><span class="sv" id="sv-hcorr">-</span></div>
         <div class="si"><span class="sl2">REGIME:</span><span class="regime" id="sv-reg">-</span></div>
         <div class="sp"></div>
-        <div class="pref">Stabler 2026 &nbsp;·&nbsp; <a href="https://github.com/RandolphPelican/population-code-lab" target="_blank">population-code-lab</a></div>
+        <div class="pref">Stabler 2026 &nbsp;&middot;&nbsp; <a href="https://github.com/RandolphPelican/population-code-lab" target="_blank">population-code-lab</a></div>
       </div>
       <div id="charts">
         <div class="cp">
@@ -310,7 +302,7 @@ select:focus{border-color:var(--accent)}
           <div class="cw"><canvas id="primary-c"></canvas></div>
         </div>
         <div class="cp">
-          <div class="ch"><span>Secondary</span><select class="chart-sel" id="sel-secondary" onchange="secondaryMode=this.value;drawSecondary()"><option value="sweep">Alignment Sweep</option><option value="eigenspectrum">Eigenspectrum</option><option value="scaling">N-Scaling</option><option value="crossplot">Metric Crossplot</option></select><span class="badge">live</span></div>
+          <div class="ch"><span>Secondary</span><select class="chart-sel" id="sel-secondary" onchange="secondaryMode=this.value;drawSecondary()"><option value="sweep">Alignment Sweep</option><option value="eigenspectrum">Eigenspectrum</option><option value="scaling">N-Scaling</option><option value="crossplot">K vs FI Crossplot</option><option value="rdm">RDM</option><option value="mds">MDS</option><option value="epoch">Epoch Timecourse</option></select><span class="badge">live</span></div>
           <div class="cw"><canvas id="secondary-c"></canvas></div>
         </div>
         <div class="cp">
@@ -334,7 +326,8 @@ select:focus{border-color:var(--accent)}
   <div class="sbi">SNR: <span id="sb-snr">-</span></div>
   <div class="sbi">navFrac: <span id="sb-nf">-</span></div>
   <div class="sbi">K: <span id="sb-k">-</span></div>
-  <div class="sbi right">K = I_nav / H_max(s2task) &nbsp;·&nbsp; Randolph Pelican III</div>
+  <div class="sbi">95% CI: <span id="sb-ci">-</span></div>
+  <div class="sbi right">K = I_nav / H_max &nbsp;&middot;&nbsp; Randolph Pelican III</div>
 </div>
 <script>
 "use strict";
@@ -363,6 +356,8 @@ function skipIntro(){
   el.style.transition='opacity .8s ease';el.style.opacity='0';
   setTimeout(()=>{el.style.display='none';document.getElementById('app').classList.add('visible');compute();},800);
 }
+
+// ── Math engine ──────────────────────────────────────────────────────────────
 const TWO_PI_E=2*Math.PI*Math.E,LOG2=Math.log(2);
 function normCDF(x){const t=1/(1+.2316419*Math.abs(x));const d=.3989422820*Math.exp(-x*x/2);const p=d*t*(.3193815301+t*(-.3565637914+t*(1.7814779372+t*(-1.8212559978+t*1.3302744929))));return x>0?1-p:p;}
 function eigenspectrum(p){const sigEff=p.sig*p.gain,sn2=p.noise*p.noise;const d=Math.min(p.dim,p.n);const ls=sigEff*sigEff+sn2/Math.max(p.n,1);const ln=sn2/Math.max(p.n,1);return{ls,ln,d,n:p.n};}
@@ -397,13 +392,34 @@ function computeMetrics(p){
   const regime=K>=.85&&acc>88?'COHERENT':infoLimiting?'INFO-LIMITED':K>=.6?'MIXED':align>.7?'NOISE-ALIGNED':dim>25?'HIGH-DIM':'FRAGMENTED';
   return{K,rawMI,bcMI,navMI,FI,CC,PR,navFrac,acc,DCI,sig2task,Hmax,SNR,Hcorr,ceilAcc,regime,infoLimiting};
 }
-const P={n:100,sig:2.0,noise:1.0,align:.2,dim:8,gain:1.0,mux:1,thresh:1.0,rho:.1,diffcorr:0.0,fano:1.0,sparse:.5,trials:500,boot:200,bins:20,split:.8,cv:5,epochs:20,phi:.8,ouv:.1,remap:.2,res:15,nonstat:false,pref:15,gainhet:0,ns:8,noisetype:'gaussian',tuning:'gaussian',manifold:'linear',drifttype:'ar1',decoder:'lda',optimtarget:'K',ceiling:true};
-let lastM=null;
+
+// ── Bootstrap CI ─────────────────────────────────────────────────────────────
+let _bxState=false,_bxExtra=0;
+function randnBox(){if(_bxState){_bxState=false;return _bxExtra;}const u=Math.random()||1e-10,v=Math.random()||1e-10;const r=Math.sqrt(-2*Math.log(u)),t=2*Math.PI*v;_bxExtra=r*Math.sin(t);_bxState=true;return r*Math.cos(t);}
+function bootstrapCI(p,keys){
+  const B=Math.min(p.boot,500);
+  const sigSE=p.sig/Math.sqrt(Math.max(p.trials,1));
+  const noiseSE=p.noise/Math.sqrt(Math.max(p.trials,1))*.5;
+  const samples={};keys.forEach(k=>samples[k]=[]);
+  for(let b=0;b<B;b++){
+    const pb={...p,sig:Math.max(.01,p.sig+randnBox()*sigSE),noise:Math.max(.01,p.noise+randnBox()*noiseSE)};
+    const m=computeMetrics(pb);
+    keys.forEach(k=>{if(m[k]!==undefined)samples[k].push(m[k]);});
+  }
+  const ci={};
+  keys.forEach(k=>{const s=samples[k].sort((a,b)=>a-b);ci[k]=[s[Math.floor(B*.025)]??0,s[Math.floor(B*.975)]??0];});
+  return ci;
+}
+
+// ── State ─────────────────────────────────────────────────────────────────────
+const P={n:100,sig:2.0,noise:1.0,align:.2,dim:8,gain:1.0,mux:1,thresh:1.0,rho:.1,diffcorr:0.0,fano:1.0,sparse:.5,trials:500,boot:200,bins:20,split:.8,cv:5,epochs:20,phi:.8,ouv:.1,remap:.2,res:15,nonstat:false,pref:15,ns:8,drifttype:'ar1',decoder:'lda',optimtarget:'K',ceiling:true,lambda:.2};
+let lastM=null,lastCI=null;
+function sv(id,val,dec){const el=document.getElementById(id);if(!el)return;el.textContent=typeof val==='number'?val.toFixed(dec??3):val;}
 function sp(key,val,vid,fmt){P[key]=val;document.getElementById(vid).textContent=fmt(val);compute();}
 function switchTab(name){document.querySelectorAll('.stab').forEach(t=>t.classList.toggle('active',t.dataset.tab===name));document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active',p.id==='tab-'+name));}
+
 function compute(){
   const m=computeMetrics(P);lastM=m;
-  function sv(id,val,dec=3){document.getElementById(id).textContent=typeof val==='number'?val.toFixed(dec):val;}
   sv('mv-K',m.K);sv('mv-MI',m.rawMI);sv('mv-bcMI',m.bcMI);sv('mv-nMI',m.navMI);
   sv('mv-FI',m.FI,1);sv('mv-CC',m.CC);sv('mv-PR',m.PR,1);
   sv('mv-navF',m.navFrac);sv('mv-acc',m.acc,1);sv('mv-dci',m.DCI);sv('mv-ceil',m.ceilAcc,1);
@@ -412,136 +428,180 @@ function compute(){
   document.getElementById('sv-reg').textContent=m.regime;
   sv('sb-st',m.sig2task,4);sv('sb-hm',m.Hmax);sv('sb-snr',m.SNR,2);sv('sb-nf',m.navFrac);sv('sb-k',m.K);
   const db=document.getElementById('diag-bar');
-  const indepWarn=m.Hcorr<0.4;
-  db.classList.toggle('visible',indepWarn||m.infoLimiting);
-  document.getElementById('diag-indep').textContent=indepWarn?`Corr entropy H=${m.Hcorr.toFixed(3)} — independence suspect (Ecker 2014)`:'';
+  db.classList.toggle('visible',m.Hcorr<0.4||m.infoLimiting);
   document.getElementById('diag-infolimit').style.display=m.infoLimiting?'flex':'none';
-  document.getElementById('warn-indep').classList.toggle('visible',m.DCI>0.3);
-  const kc=document.getElementById('c-K');kc.classList.remove('flash');void kc.offsetWidth;kc.classList.add('flash');
-  const kv=document.getElementById('mv-K');kv.className='mv '+(m.K>=.85?'green':m.K>=.5?'gold':'red');
+  // Drift condition-number guard
+  if(P.nonstat){const cn=P.ouv*P.epochs*(1/(1-Math.max(P.phi,.01)));const dw=document.getElementById('drift-warn');if(cn>1000){dw.textContent='Warning: volatility x epochs cond est '+cn.toFixed(0)+' > 1000';dw.classList.add('visible');}else{dw.classList.remove('visible');}}
+  // Flash K
+  const kc=document.querySelector('#metrics-rail .mc');kc.classList.remove('flash');void kc.offsetWidth;kc.classList.add('flash');
+  // Async CI — doesn't block sliders
+  setTimeout(()=>{
+    const ci=bootstrapCI(P,['K','rawMI','FI','acc']);lastCI=ci;
+    const f=v=>v.toFixed(3);const r=(lo,hi)=>`[${f(lo)},${f(hi)}]`;
+    sv('ci-K',r(ci.K[0],ci.K[1]));sv('ci-MI',r(ci.rawMI[0],ci.rawMI[1]));
+    sv('ci-FI',r(ci.FI[0],ci.FI[1]));sv('ci-acc',r(ci.acc[0],ci.acc[1]));
+    sv('sb-ci',r(ci.K[0],ci.K[1]));
+    drawPrimary();
+  },0);
   drawPrimary();drawSecondary();
 }
+
+// ── Canvas helpers ────────────────────────────────────────────────────────────
 function getCanvas(id){const c=document.getElementById(id);c.width=c.offsetWidth;c.height=c.offsetHeight;return{c,x:c.getContext('2d'),W:c.width,H:c.height};}
 function clr(x,W,H){x.clearRect(0,0,W,H);}
-function grid(x,W,H,pad=40){x.strokeStyle='rgba(26,58,85,0.4)';x.lineWidth=1;for(let i=0;i<=5;i++){const y=pad+(H-pad*2)*i/5;x.beginPath();x.moveTo(pad,y);x.lineTo(W-10,y);x.stroke();}}
-function label(x,txt,px,py,col='#5a8aaa',sz=8){x.fillStyle=col;x.font=`${sz}px 'Space Mono',monospace`;x.fillText(txt,px,py);}
+function lbl(x,txt,px,py,col,sz){x.fillStyle=col;x.font=`${sz||9}px 'Space Mono',monospace`;x.fillText(txt,px,py);}
+function grid(x,W,H,pad){x.strokeStyle='#0d2035';x.lineWidth=1;for(let i=0;i<=4;i++){const y=(H-pad-16)*i/4+pad;x.beginPath();x.moveTo(pad,y);x.lineTo(W-10,y);x.stroke();lbl(x,(1-i/4).toFixed(2),2,y+3,'#1a3a55',7);}}
+
+// ── Primary charts ────────────────────────────────────────────────────────────
 let primaryMode='bar';
-function drawPrimary(){
-  if(!lastM)return;
-  const{c,x,W,H}=getCanvas('primary-c');clr(x,W,H);
-  if(primaryMode==='bar')drawBar(x,W,H);
-  else if(primaryMode==='tuning')drawTuning(x,W,H);
-  else if(primaryMode==='scatter')drawScatter(x,W,H);
-  else if(primaryMode==='covariance')drawCov(x,W,H);
-}
+function drawPrimary(){if(!lastM)return;const{x,W,H}=getCanvas('primary-c');clr(x,W,H);if(primaryMode==='bar')drawBar(x,W,H);else if(primaryMode==='tuning')drawTuning(x,W,H);else if(primaryMode==='scatter')drawScatter(x,W,H);else if(primaryMode==='covariance')drawCov(x,W,H);}
 function drawBar(x,W,H){
-  const m=lastM;
-  const metrics=[{lbl:'K',val:m.K,max:1,col:'#ffcc33'},{lbl:'rawMI',val:Math.min(m.rawMI,5),max:5,col:'#00d1ff'},{lbl:'bcMI',val:Math.min(m.bcMI,5),max:5,col:'#00d1ff'},{lbl:'navMI',val:Math.min(m.navMI,5),max:5,col:'#7cf2c6'},{lbl:'navF',val:m.navFrac,max:1,col:'#7cf2c6'},{lbl:'acc%',val:m.acc/100,max:1,col:'#7cf2c6'},{lbl:'DCI',val:m.DCI,max:1,col:'#ff4455'},{lbl:'PR',val:Math.min(m.PR/Math.max(P.n,1),1),max:1,col:'#a855f7'},{lbl:'CC',val:Math.min(m.CC/10,1),max:1,col:'#00d1ff'}];
-  const pad=36,bw=Math.floor((W-pad-10)/metrics.length)-3;
-  grid(x,W,H,pad);
+  const m=lastM,pad=36;grid(x,W,H,pad);
+  const metrics=[
+    {lbl:'K',val:m.K,col:'#ffcc33',ci:lastCI?.K},
+    {lbl:'navF',val:m.navFrac,col:'#7cf2c6',ci:null},
+    {lbl:'MI',val:Math.min(m.rawMI/5,1),col:'#00d1ff',ci:lastCI?.rawMI?[lastCI.rawMI[0]/5,lastCI.rawMI[1]/5]:null},
+    {lbl:'bcMI',val:Math.min(m.bcMI/5,1),col:'#0099bb',ci:null},
+    {lbl:'FI',val:Math.min(m.FI/200,1),col:'#a855f7',ci:lastCI?.FI?[lastCI.FI[0]/200,lastCI.FI[1]/200]:null},
+    {lbl:'CC',val:Math.min(m.CC/5,1),col:'#7755cc',ci:null},
+    {lbl:'PR',val:Math.min(m.PR/P.n,1),col:'#55aaff',ci:null},
+    {lbl:'DCI',val:m.DCI,col:'#ff4455',ci:null},
+    {lbl:'acc%',val:m.acc/100,col:'#7cf2c6',ci:lastCI?.acc?[lastCI.acc[0]/100,lastCI.acc[1]/100]:null},
+  ];
+  const bw=Math.floor((W-pad-10)/metrics.length)-3;
   metrics.forEach((mt,i)=>{
-    const bh=Math.max(0,(H-pad-16)*mt.val/mt.max);
-    const bx=pad+i*(bw+3),by=H-pad-bh;
-    x.fillStyle=mt.col+'33';x.fillRect(bx,H-pad-(H-pad-16),bw,(H-pad-16));
+    const bx=pad+i*(bw+3),bh=Math.max(1,(H-pad-16)*Math.max(0,Math.min(1,mt.val))),by=H-pad-bh;
+    x.fillStyle=mt.col+'22';x.fillRect(bx,pad,bw,H-pad-16);
     x.fillStyle=mt.col;x.fillRect(bx,by,bw,bh);
-    x.strokeStyle=mt.col+'88';x.lineWidth=1;x.strokeRect(bx,H-pad-(H-pad-16),bw,(H-pad-16));
-    label(x,mt.lbl,bx,H-pad+10,'#5a8aaa',7);
-    label(x,(mt.lbl==='acc%'?(m.acc.toFixed(1)+'%'):mt.val.toFixed(3)),bx,Math.max(by-3,10),'#c8e0f0',7);
+    if(mt.ci&&lastCI){
+      const loY=(H-pad-16)*(1-Math.max(0,Math.min(1,mt.ci[0])))+pad,hiY=(H-pad-16)*(1-Math.max(0,Math.min(1,mt.ci[1])))+pad;
+      x.strokeStyle=mt.col;x.lineWidth=1.5;
+      x.beginPath();x.moveTo(bx+bw/2,loY);x.lineTo(bx+bw/2,hiY);x.stroke();
+      [[loY],[hiY]].forEach(([y])=>{x.beginPath();x.moveTo(bx+bw/2-3,y);x.lineTo(bx+bw/2+3,y);x.stroke();});
+    }
+    lbl(x,mt.lbl,bx,H-pad+10,'#5a8aaa',7);
+    lbl(x,mt.lbl==='acc%'?(m.acc.toFixed(1)+'%'):mt.val.toFixed(3),bx,Math.max(by-3,10),'#c8e0f0',7);
   });
-  label(x,'METRIC OVERVIEW',pad,14,'#00d1ff',8);
-  label(x,`K=${m.K.toFixed(3)}  acc=${m.acc.toFixed(1)}%  regime=${m.regime}`,pad,H-2,'#5a8aaa',7);
+  lbl(x,'METRIC OVERVIEW',pad,14,'#00d1ff',8);
+  lbl(x,`K=${m.K.toFixed(3)}  acc=${m.acc.toFixed(1)}%  regime=${m.regime}`,pad,H-2,'#5a8aaa',7);
 }
 function drawTuning(x,W,H){
-  const pad=36,n=Math.min(P.n,20);grid(x,W,H,pad);
-  label(x,'TUNING CURVES (sample 20)',pad,14,'#00d1ff',8);
+  const pad=36,n=Math.min(P.n,20);grid(x,W,H,pad);lbl(x,'TUNING CURVES (sample 20)',pad,14,'#00d1ff',8);
   const stims=100,sigP=P.pref;
-  for(let i=0;i<n;i++){
-    const pref=i/n*stims;
-    x.beginPath();x.strokeStyle=`hsl(${180+i*12},70%,60%)`;x.lineWidth=1;
-    for(let s=0;s<=stims;s++){const dx=s-pref,wrap=Math.min(Math.abs(dx),stims-Math.abs(dx));const r=Math.exp(-wrap*wrap/(2*sigP*sigP));const px=pad+(W-pad-10)*s/stims;const py=(H-pad-16)-(H-pad-40)*r+pad;s===0?x.moveTo(px,py):x.lineTo(px,py);}
-    x.stroke();
-  }
-  label(x,'stimulus',W/2,H-2,'#5a8aaa',7);
+  for(let i=0;i<n;i++){const pref=i/n*stims;x.beginPath();x.strokeStyle=`hsl(${180+i*12},70%,60%)`;x.lineWidth=1;for(let s=0;s<=stims;s++){const dx=s-pref,wrap=Math.min(Math.abs(dx),stims-Math.abs(dx));const r=Math.exp(-wrap*wrap/(2*sigP*sigP));const px=pad+(W-pad-10)*s/stims;const py=(H-pad-16)-(H-pad-40)*r+pad;s===0?x.moveTo(px,py):x.lineTo(px,py);}x.stroke();}
+  lbl(x,'stimulus',W/2,H-2,'#5a8aaa',7);
 }
 function drawScatter(x,W,H){
-  const pad=36;grid(x,W,H,pad);label(x,'POPULATION SCATTER (PC1 vs PC2)',pad,14,'#00d1ff',8);
+  const pad=36;grid(x,W,H,pad);lbl(x,'POPULATION SCATTER (PC1 vs PC2)',pad,14,'#00d1ff',8);
   const ns=P.ns,n=Math.min(P.n,80),sn=P.noise,sg=P.sig*P.gain;
-  for(let s=0;s<ns;s++){
-    const angle=s/ns*Math.PI*2;
-    const cx=pad+(W-pad-10)*.5+Math.cos(angle)*sg*18;
-    const cy=(H-pad-16)/2+pad+Math.sin(angle)*sg*18;
-    const col=`hsl(${s/ns*360},70%,60%)`;
-    for(let i=0;i<Math.floor(n/ns);i++){x.beginPath();x.arc(cx+(Math.random()-.5)*sn*22,cy+(Math.random()-.5)*sn*22,2,0,Math.PI*2);x.fillStyle=col+'99';x.fill();}
-  }
-  label(x,'PC1',W/2,H-2,'#5a8aaa',7);
+  for(let s=0;s<ns;s++){const angle=s/ns*Math.PI*2;const cx=pad+(W-pad-10)*.5+Math.cos(angle)*sg*18;const cy=(H-pad-16)/2+pad+Math.sin(angle)*sg*18;const col=`hsl(${s/ns*360},70%,60%)`;for(let i=0;i<Math.floor(n/ns);i++){x.beginPath();x.arc(cx+(Math.random()-.5)*sn*22,cy+(Math.random()-.5)*sn*22,2,0,Math.PI*2);x.fillStyle=col+'99';x.fill();}}
+  lbl(x,'PC1',W/2,H-2,'#5a8aaa',7);
 }
 function drawCov(x,W,H){
-  const pad=36,sz=Math.min(P.n,20);
-  const cellW=(W-pad-10)/sz,cellH=(H-pad-16)/sz;
-  label(x,'COVARIANCE MATRIX (sample 20x20)',pad,14,'#00d1ff',8);
-  for(let i=0;i<sz;i++)for(let j=0;j<sz;j++){
-    const diff=Math.abs(i-j)/sz;
-    const corr=i===j?1:P.rho*Math.exp(-diff/P.lambda)*(1-P.align*.5);
-    const v=Math.max(0,Math.min(1,(corr+1)/2));
-    x.fillStyle=`rgb(${Math.round(v*255)},50,${Math.round((1-v)*255)})`;
-    x.fillRect(pad+j*cellW,pad+i*cellH,cellW-1,cellH-1);
-  }
+  const pad=36,sz=Math.min(P.n,20),cellW=(W-pad-10)/sz,cellH=(H-pad-16)/sz;
+  lbl(x,'COVARIANCE MATRIX (sample 20x20)',pad,14,'#00d1ff',8);
+  for(let i=0;i<sz;i++)for(let j=0;j<sz;j++){const diff=Math.abs(i-j)/sz;const corr=i===j?1:P.rho*Math.exp(-diff/P.lambda)*(1-P.align*.5);const v=Math.max(0,Math.min(1,(corr+1)/2));x.fillStyle=`rgb(${Math.round(v*255)},50,${Math.round((1-v)*255)})`;x.fillRect(pad+j*cellW,pad+i*cellH,cellW-1,cellH-1);}
 }
+
+// ── Secondary charts ──────────────────────────────────────────────────────────
 let secondaryMode='sweep';
-function drawSecondary(){
-  if(!lastM)return;
-  const{c,x,W,H}=getCanvas('secondary-c');clr(x,W,H);
-  if(secondaryMode==='sweep')drawAlignSweep(x,W,H);
-  else if(secondaryMode==='eigenspectrum')drawEigen(x,W,H);
-  else if(secondaryMode==='scaling')drawScaling(x,W,H);
-  else if(secondaryMode==='crossplot')drawCrossplot(x,W,H);
-}
+function drawSecondary(){if(!lastM)return;const{x,W,H}=getCanvas('secondary-c');clr(x,W,H);if(secondaryMode==='sweep')drawAlignSweep(x,W,H);else if(secondaryMode==='eigenspectrum')drawEigen(x,W,H);else if(secondaryMode==='scaling')drawScaling(x,W,H);else if(secondaryMode==='crossplot')drawCrossplot(x,W,H);else if(secondaryMode==='rdm')drawRDM(x,W,H);else if(secondaryMode==='mds')drawMDS(x,W,H);else if(secondaryMode==='epoch')drawEpoch(x,W,H);}
 function drawAlignSweep(x,W,H){
-  const pad=36,steps=40;grid(x,W,H,pad);
-  label(x,'ALIGNMENT SWEEP (alpha 0 to 1)',pad,14,'#00d1ff',8);
-  const metrics=[{key:'K',col:'#ffcc33',lbl:'K'},{key:'rawMI',col:'#00d1ff',lbl:'MI',scale:1/5},{key:'acc',col:'#7cf2c6',lbl:'acc',scale:1/100},{key:'DCI',col:'#ff4455',lbl:'DCI'},{key:'navFrac',col:'#a855f7',lbl:'navF'}];
-  metrics.forEach(mt=>{
-    x.beginPath();x.strokeStyle=mt.col;x.lineWidth=1.5;
-    for(let i=0;i<=steps;i++){const a=i/steps;const m=computeMetrics({...P,align:a});let v=m[mt.key];if(mt.scale)v*=mt.scale;v=Math.max(0,Math.min(1,v));const px=pad+(W-pad-10)*i/steps;const py=(H-pad-16)*(1-v)+pad;i===0?x.moveTo(px,py):x.lineTo(px,py);}
-    x.stroke();
-    const m=computeMetrics({...P,align:P.align});let v=m[mt.key];if(mt.scale)v*=mt.scale;v=Math.max(0,Math.min(1,v));
-    x.beginPath();x.arc(pad+(W-pad-10)*P.align,(H-pad-16)*(1-v)+pad,3,0,Math.PI*2);x.fillStyle=mt.col;x.fill();
-  });
-  metrics.forEach((mt,i)=>{x.fillStyle=mt.col;x.fillRect(W-60,20+i*12,8,2);label(x,mt.lbl,W-48,22+i*12,mt.col,7);});
-  label(x,'alpha',W/2,H-2,'#5a8aaa',7);
-  label(x,`current alpha=${P.align.toFixed(2)}`,pad,H-2,'#5a8aaa',7);
+  const pad=36,steps=40;grid(x,W,H,pad);lbl(x,'ALIGNMENT SWEEP (alpha 0→1)',pad,14,'#00d1ff',8);
+  const mts=[{key:'K',col:'#ffcc33',lbl:'K'},{key:'rawMI',col:'#00d1ff',lbl:'MI',scale:1/5},{key:'acc',col:'#7cf2c6',lbl:'acc',scale:1/100},{key:'DCI',col:'#ff4455',lbl:'DCI'},{key:'navFrac',col:'#a855f7',lbl:'navF'}];
+  mts.forEach(mt=>{x.beginPath();x.strokeStyle=mt.col;x.lineWidth=1.5;for(let i=0;i<=steps;i++){const a=i/steps;const m=computeMetrics({...P,align:a});let v=m[mt.key];if(mt.scale)v*=mt.scale;v=Math.max(0,Math.min(1,v));const px=pad+(W-pad-10)*i/steps;const py=(H-pad-16)*(1-v)+pad;i===0?x.moveTo(px,py):x.lineTo(px,py);}x.stroke();const m=computeMetrics({...P,align:P.align});let v=m[mt.key];if(mt.scale)v*=mt.scale;v=Math.max(0,Math.min(1,v));x.beginPath();x.arc(pad+(W-pad-10)*P.align,(H-pad-16)*(1-v)+pad,3,0,Math.PI*2);x.fillStyle=mt.col;x.fill();});
+  mts.forEach((mt,i)=>{x.fillStyle=mt.col;x.fillRect(W-60,20+i*12,8,2);lbl(x,mt.lbl,W-48,22+i*12,mt.col,7);});
+  lbl(x,'alpha',W/2,H-2,'#5a8aaa',7);lbl(x,`alpha=${P.align.toFixed(2)}`,pad,H-2,'#5a8aaa',7);
 }
 function drawEigen(x,W,H){
-  const pad=36;grid(x,W,H,pad);label(x,'EIGENSPECTRUM',pad,14,'#00d1ff',8);
-  const{ls,ln,d,n}=eigenspectrum(P);
-  const bw=Math.max(2,Math.floor((W-pad-10)/Math.min(n,50))-1);
-  for(let i=0;i<Math.min(n,50);i++){const lv=i<d?ls:ln;const frac=lv/ls;const bh=(H-pad-16)*frac;x.fillStyle=i<d?'#00d1ff':'#1a3a55';x.fillRect(pad+i*(bw+1),H-pad-bh,bw,bh);}
-  label(x,`signal dims=${d}  ls=${ls.toFixed(3)}  ln=${ln.toFixed(4)}`,pad,H-2,'#5a8aaa',7);
+  const pad=36;grid(x,W,H,pad);lbl(x,'EIGENSPECTRUM',pad,14,'#00d1ff',8);
+  const{ls,ln,d,n}=eigenspectrum(P);const bw=Math.max(2,Math.floor((W-pad-10)/Math.min(n,50))-1);
+  for(let i=0;i<Math.min(n,50);i++){const lv=i<d?ls:ln;const bh=(H-pad-16)*lv/ls;x.fillStyle=i<d?'#00d1ff':'#1a3a55';x.fillRect(pad+i*(bw+1),H-pad-bh,bw,bh);}
+  lbl(x,`signal dims=${d}  ls=${ls.toFixed(3)}  ln=${ln.toFixed(4)}`,pad,H-2,'#5a8aaa',7);
 }
 function drawScaling(x,W,H){
-  const pad=36,steps=20;grid(x,W,H,pad);label(x,'N-SCALING (log-log)',pad,14,'#00d1ff',8);
+  const pad=36,steps=20;grid(x,W,H,pad);lbl(x,'N-SCALING (log-log)',pad,14,'#00d1ff',8);
   const nvals=Array.from({length:steps},(_,i)=>Math.round(10*Math.pow(50,i/(steps-1))));
-  [{key:'K',col:'#ffcc33'},{key:'FI',col:'#00d1ff',scale:v=>Math.min(Math.log(v+1)/10,1)},{key:'acc',col:'#7cf2c6',scale:v=>v/100}].forEach(mt=>{
-    x.beginPath();x.strokeStyle=mt.col;x.lineWidth=1.5;
-    nvals.forEach((nv,i)=>{const m=computeMetrics({...P,n:nv});let v=mt.scale?mt.scale(m[mt.key]):Math.max(0,Math.min(1,m[mt.key]));const px=pad+(W-pad-10)*i/(steps-1);const py=(H-pad-16)*(1-Math.max(0,Math.min(1,v)))+pad;i===0?x.moveTo(px,py):x.lineTo(px,py);});
-    x.stroke();
-  });
-  label(x,'N neurons',W/2,H-2,'#5a8aaa',7);
+  [{key:'K',col:'#ffcc33'},{key:'FI',col:'#00d1ff',scale:v=>Math.min(Math.log(v+1)/10,1)},{key:'acc',col:'#7cf2c6',scale:v=>v/100}].forEach(mt=>{x.beginPath();x.strokeStyle=mt.col;x.lineWidth=1.5;nvals.forEach((nv,i)=>{const m=computeMetrics({...P,n:nv});let v=mt.scale?mt.scale(m[mt.key]):Math.max(0,Math.min(1,m[mt.key]));const px=pad+(W-pad-10)*i/(steps-1);const py=(H-pad-16)*(1-Math.max(0,Math.min(1,v)))+pad;i===0?x.moveTo(px,py):x.lineTo(px,py);});x.stroke();});
+  lbl(x,'N neurons',W/2,H-2,'#5a8aaa',7);
 }
 function drawCrossplot(x,W,H){
-  const pad=36,steps=30;grid(x,W,H,pad);label(x,'METRIC CROSSPLOT (K vs FI)',pad,14,'#00d1ff',8);
-  const pts=[];
-  for(let i=0;i<=steps;i++){const a=i/steps;const m=computeMetrics({...P,align:a});pts.push({fx:Math.min(m.FI/100,1),fy:m.K,a});}
-  x.beginPath();x.strokeStyle='#00d1ff44';x.lineWidth=1;
-  pts.forEach((p,i)=>{const px=pad+(W-pad-10)*p.fx;const py=(H-pad-16)*(1-p.fy)+pad;i===0?x.moveTo(px,py):x.lineTo(px,py);});x.stroke();
+  const pad=36,steps=30;grid(x,W,H,pad);lbl(x,'K vs FI CROSSPLOT',pad,14,'#00d1ff',8);
+  const pts=[];for(let i=0;i<=steps;i++){const a=i/steps;const m=computeMetrics({...P,align:a});pts.push({fx:Math.min(m.FI/100,1),fy:m.K,a});}
+  x.beginPath();x.strokeStyle='#00d1ff44';x.lineWidth=1;pts.forEach((p,i)=>{const px=pad+(W-pad-10)*p.fx;const py=(H-pad-16)*(1-p.fy)+pad;i===0?x.moveTo(px,py):x.lineTo(px,py);});x.stroke();
   pts.forEach(p=>{const px=pad+(W-pad-10)*p.fx;const py=(H-pad-16)*(1-p.fy)+pad;x.beginPath();x.arc(px,py,3,0,Math.PI*2);x.fillStyle=`hsl(${p.a*120+240},70%,60%)`;x.fill();});
   x.beginPath();x.arc(pad+(W-pad-10)*Math.min(lastM.FI/100,1),(H-pad-16)*(1-lastM.K)+pad,5,0,Math.PI*2);x.fillStyle='#ffcc33';x.fill();
-  label(x,'FI (norm)',W/2,H-2,'#5a8aaa',7);label(x,'K',4,H/2,'#5a8aaa',7);
+  lbl(x,'FI (norm)',W/2,H-2,'#5a8aaa',7);lbl(x,'K',4,H/2,'#5a8aaa',7);
 }
+function drawRDM(x,W,H){
+  const pad=36,ns=Math.min(P.ns,12),cellW=(W-pad-10)/ns,cellH=(H-pad-16)/ns;
+  lbl(x,'REPRESENTATIONAL DISSIMILARITY MATRIX',pad,14,'#00d1ff',8);
+  const sigEff=P.sig*P.gain,sn2=P.noise*P.noise;
+  for(let i=0;i<ns;i++)for(let j=0;j<ns;j++){
+    const angDiff=Math.abs(i-j)/ns*Math.PI;
+    const dSig=sigEff*Math.sqrt(2*(1-Math.cos(angDiff*2)));
+    const nP=Math.sqrt(sn2*(P.align+(1-P.align)/Math.max(P.n,1)));
+    const diss=i===j?0:Math.min(1,dSig/(dSig+nP+1e-9));
+    x.fillStyle=`rgb(${Math.round(diss*128)},${Math.round(diss*220)},${Math.round((1-diss)*200+55)})`;
+    x.fillRect(pad+j*cellW,pad+i*cellH,cellW-1,cellH-1);
+  }
+  for(let i=0;i<ns;i++){lbl(x,`S${i+1}`,pad+i*cellW+2,pad-3,'#5a8aaa',6);lbl(x,`S${i+1}`,2,pad+i*cellH+cellH/2,'#5a8aaa',6);}
+  lbl(x,`K=${lastM.K.toFixed(3)}  alpha=${P.align.toFixed(2)}`,pad,H-2,'#5a8aaa',7);
+}
+function drawMDS(x,W,H){
+  const pad=36,ns=Math.min(P.ns,12);
+  lbl(x,'MDS — REPRESENTATIONAL GEOMETRY (2D)',pad,14,'#00d1ff',8);
+  const sigEff=P.sig*P.gain,sn2=P.noise*P.noise;
+  const D=Array.from({length:ns},(_,i)=>Array.from({length:ns},(_,j)=>{if(i===j)return 0;const ad=Math.abs(i-j)/ns*Math.PI;return sigEff*Math.sqrt(2*(1-Math.cos(ad*2)))/(1+Math.sqrt(sn2*(P.align+(1-P.align)/Math.max(P.n,1))));}));
+  const D2=D.map(r=>r.map(v=>v*v));
+  const rm=D2.map(r=>r.reduce((a,b)=>a+b,0)/ns),gm=rm.reduce((a,b)=>a+b,0)/ns;
+  const B=D2.map((r,i)=>r.map((v,j)=>-.5*(v-rm[i]-rm[j]+gm)));
+  function pwr(M,steps=30){let v=Array.from({length:ns},()=>Math.random()-.5);for(let s=0;s<steps;s++){const Mv=M.map(r=>r.reduce((a,c,k)=>a+c*v[k],0));const n=Math.sqrt(Mv.reduce((a,c)=>a+c*c,0))||1;v=Mv.map(c=>c/n);}const lam=v.reduce((a,c,i)=>a+c*M[i].reduce((s,y,k)=>s+y*v[k],0),0);return{v,lam};}
+  const e1=pwr(B);const B2=B.map((r,i)=>r.map((v,j)=>v-e1.lam*e1.v[i]*e1.v[j]));const e2=pwr(B2);
+  const s1=Math.sqrt(Math.abs(e1.lam)),s2=Math.sqrt(Math.abs(e2.lam));
+  const pts=Array.from({length:ns},(_,i)=>({px:e1.v[i]*s1,py:e2.v[i]*s2}));
+  const xs=pts.map(p=>p.px),ys=pts.map(p=>p.py);
+  const xmn=Math.min(...xs),xmx=Math.max(...xs)||1,ymn=Math.min(...ys),ymx=Math.max(...ys)||1;
+  const mg=40;
+  pts.forEach((p,i)=>{
+    const cx=pad+mg+(W-pad-10-2*mg)*(p.px-xmn)/(xmx-xmn);
+    const cy=pad+mg+(H-pad-16-2*mg)*(p.py-ymn)/(ymx-ymn);
+    const col=`hsl(${i/ns*360},70%,60%)`;
+    x.beginPath();x.arc(cx,cy,5,0,Math.PI*2);x.fillStyle=col;x.fill();
+    lbl(x,`S${i+1}`,cx+7,cy+3,col,7);
+  });
+  x.beginPath();x.strokeStyle='#00d1ff22';x.lineWidth=1;
+  pts.forEach((p,i)=>{const cx=pad+mg+(W-pad-10-2*mg)*(p.px-xmn)/(xmx-xmn);const cy=pad+mg+(H-pad-16-2*mg)*(p.py-ymn)/(ymx-ymn);i===0?x.moveTo(cx,cy):x.lineTo(cx,cy);});
+  x.closePath();x.stroke();
+  lbl(x,`K=${lastM.K.toFixed(3)}`,pad,H-2,'#5a8aaa',7);
+}
+function drawEpoch(x,W,H){
+  const pad=36,E=Math.min(P.epochs,50);grid(x,W,H,pad);
+  lbl(x,'EPOCH TIMECOURSE (drift simulation)',pad,14,'#00d1ff',8);
+  if(!P.nonstat){lbl(x,'Enable drift in Noise tab',pad+20,H/2,'#1a3a55',9);return;}
+  const ser={K:[],MI:[],acc:[]};let cN=P.noise,cA=P.align;
+  for(let e=0;e<E;e++){
+    if(P.drifttype==='ar1'){cN=P.phi*cN+(1-P.phi)*P.noise+randnBox()*P.ouv;}
+    else if(P.drifttype==='ou'){cN+=P.phi*(P.noise-cN)+randnBox()*P.ouv;}
+    else if(P.drifttype==='remap'){if(Math.random()<P.remap)cA=Math.min(1,cA+.1+Math.random()*.1);}
+    else if(P.drifttype==='oscillatory'){cN=P.noise*(1+P.ouv*Math.sin(2*Math.PI*8*e/E));}
+    cN=Math.max(.05,cN);
+    const m=computeMetrics({...P,noise:cN,align:cA});
+    ser.K.push(m.K);ser.MI.push(Math.min(m.rawMI/5,1));ser.acc.push(m.acc/100);
+  }
+  [{s:ser.K,col:'#ffcc33',lbl:'K'},{s:ser.MI,col:'#00d1ff',lbl:'MI/5'},{s:ser.acc,col:'#7cf2c6',lbl:'acc'}].forEach(mt=>{
+    x.beginPath();x.strokeStyle=mt.col;x.lineWidth=1.5;
+    mt.s.forEach((v,i)=>{const px=pad+(W-pad-10)*i/(E-1);const py=(H-pad-16)*(1-Math.max(0,Math.min(1,v)))+pad;i===0?x.moveTo(px,py):x.lineTo(px,py);});
+    x.stroke();
+    const last=mt.s[mt.s.length-1];lbl(x,mt.lbl,W-18,(H-pad-16)*(1-Math.max(0,Math.min(1,last)))+pad,mt.col,7);
+  });
+  lbl(x,'epoch',W/2,H-2,'#5a8aaa',7);lbl(x,`drift:${P.drifttype} phi=${P.phi.toFixed(2)} ouv=${P.ouv.toFixed(2)}`,pad,H-2,'#5a8aaa',7);
+}
+
+// ── Run log ───────────────────────────────────────────────────────────────────
 let runLog=[];
 function logRun(){
-  if(!lastM)return;
-  const m=lastM,t=new Date().toLocaleTimeString();
+  if(!lastM)return;const m=lastM,t=new Date().toLocaleTimeString();
   runLog.unshift({t,K:m.K,acc:m.acc,regime:m.regime,align:P.align,sig:P.sig,noise:P.noise,n:P.n});
   const row=document.createElement('div');row.className='lr';
   row.innerHTML=`<span class="lr-tag">${t}</span><span class="lr-k">K=${m.K.toFixed(3)}</span><span class="lr-acc">acc=${m.acc.toFixed(1)}%</span><span class="lr-dim">a=${P.align.toFixed(2)} N=${P.n} ss=${P.sig.toFixed(1)}</span><span class="lr-dim">${m.regime}</span>`;
@@ -557,24 +617,21 @@ function updateCompare(){
   document.getElementById('compare-body').innerHTML=runLog.slice(0,6).map(r=>`<tr>${cols.map(c=>`<td>${typeof r[c]==='number'?r[c].toFixed(3):r[c]}</td>`).join('')}</tr>`).join('');
 }
 function clearLog(){runLog=[];document.getElementById('log-scroll').innerHTML='';document.getElementById('log-count').textContent='0 runs';document.getElementById('compare-panel').classList.remove('visible');}
+
+// ── Sweep ─────────────────────────────────────────────────────────────────────
 let sweepRunning=false,sweepStop=false;
 function runSweep(){
   if(sweepRunning)return;sweepRunning=true;sweepStop=false;
   const xk=document.getElementById('hm-x').value,yk=document.getElementById('hm-y').value,zk=document.getElementById('hm-z').value,res=P.res;
-  const ranges={align:[0,1],n:[10,500],sig:[0.1,5],noise:[0.1,5],dim:[1,50],gain:[1,10],mux:[1,8],rho:[0,0.8],diffcorr:[0,1]};
-  const xr=ranges[xk],yr=ranges[yk];
-  const hmgrid=[];let max=-Infinity,min=Infinity;
-  document.getElementById('sweep-progress').style.display='block';
-  document.getElementById('hm-badge').textContent='running';
+  const ranges={align:[0,1],n:[10,500],sig:[.1,5],noise:[.1,5],dim:[1,50],gain:[1,10],mux:[1,8],rho:[0,.8],diffcorr:[0,1]};
+  const xr=ranges[xk],yr=ranges[yk];const hmgrid=[];let max=-Infinity,min=Infinity;
+  document.getElementById('sweep-progress').style.display='block';document.getElementById('hm-badge').textContent='running';
   let i=0;
   function step(){
     if(sweepStop){sweepRunning=false;document.getElementById('sweep-progress').style.display='none';document.getElementById('hm-badge').textContent='stopped';return;}
     const row=[];
     for(let j=0;j<res;j++){const xv=xr[0]+(xr[1]-xr[0])*i/(res-1);const yv=yr[0]+(yr[1]-yr[0])*j/(res-1);const m=computeMetrics({...P,[xk]:xv,[yk]:yv});const v=m[zk]||0;row.push(v);if(v>max)max=v;if(v<min)min=v;}
-    hmgrid.push(row);
-    document.getElementById('sweep-bar').style.width=((i+1)/res*100)+'%';
-    document.getElementById('sweep-status').textContent=`Row ${i+1}/${res}`;
-    i++;
+    hmgrid.push(row);document.getElementById('sweep-bar').style.width=((i+1)/res*100)+'%';document.getElementById('sweep-status').textContent=`Row ${i+1}/${res}`;i++;
     if(i<res)requestAnimationFrame(step);
     else{sweepRunning=false;document.getElementById('sweep-progress').style.display='none';document.getElementById('hm-badge').textContent='done';drawHeatmap(hmgrid,min,max,xk,yk,zk);}
   }
@@ -582,30 +639,23 @@ function runSweep(){
 }
 function stopSweep(){sweepStop=true;}
 function drawHeatmap(grid,min,max,xk,yk,zk){
-  const{c,x,W,H}=getCanvas('hm-c');clr(x,W,H);
-  const pad=36,res=grid.length,cw=(W-pad-10)/res,ch=(H-pad-16)/res;
+  const{x,W,H}=getCanvas('hm-c');clr(x,W,H);const pad=36,res=grid.length,cw=(W-pad-10)/res,ch=(H-pad-16)/res;
   grid.forEach((row,i)=>row.forEach((v,j)=>{const t=(v-min)/Math.max(max-min,1e-12);x.fillStyle=`rgb(${Math.round(t*255)},${Math.round(t*100)},${Math.round((1-t)*180)})`;x.fillRect(pad+j*cw,pad+i*ch,cw,ch);}));
-  label(x,`${zk} sweep: ${xk} vs ${yk}`,pad,14,'#00d1ff',8);
-  label(x,xk,W/2,H-2,'#5a8aaa',7);
-  label(x,`min=${min.toFixed(3)} max=${max.toFixed(3)}`,pad,H-2,'#5a8aaa',7);
+  lbl(x,`${zk}: ${xk} vs ${yk}`,pad,14,'#00d1ff',8);lbl(x,xk,W/2,H-2,'#5a8aaa',7);lbl(x,`min=${min.toFixed(3)} max=${max.toFixed(3)}`,pad,H-2,'#5a8aaa',7);
   document.getElementById('hm-head').textContent=`Heatmap: ${zk} (${xk} x ${yk})`;
 }
-function drawHmEmpty(){const{c,x,W,H}=getCanvas('hm-c');clr(x,W,H);label(x,'Configure sweep in Sweep tab then click RUN SWEEP',20,H/2,'#1a3a55',9);}
+function drawHmEmpty(){const{x,W,H}=getCanvas('hm-c');clr(x,W,H);lbl(x,'Configure sweep in Sweep tab then click RUN SWEEP',20,H/2,'#1a3a55',9);}
+
+// ── Presets ───────────────────────────────────────────────────────────────────
 const PRESETS={
   v1:{n:100,sig:2.0,noise:1.2,align:.15,dim:10,gain:1.0,mux:1,rho:.08,diffcorr:.1,fano:1.2,sparse:.6,fidelity:'approximate — Pouget et al. 2000'},
   mt:{n:150,sig:1.8,noise:1.5,align:.3,dim:8,gain:1.0,mux:1,rho:.12,diffcorr:.25,fano:1.3,sparse:.5,fidelity:'approximate — Ecker et al. 2014'},
   pfc:{n:200,sig:1.5,noise:2.0,align:.4,dim:20,gain:1.2,mux:3,rho:.15,diffcorr:.2,fano:1.5,sparse:.4,fidelity:'approximate — Rigotti et al. 2013'},
   hpc:{n:100,sig:2.5,noise:1.0,align:.5,dim:6,gain:1.0,mux:1,rho:.05,diffcorr:.35,fano:1.1,sparse:.3,fidelity:'approximate — Frank et al. 2000'},
-  grid:{n:100,sig:3.0,noise:0.8,align:.1,dim:2,gain:1.0,mux:1,rho:.02,diffcorr:.05,fano:1.0,sparse:.7,fidelity:'publication_accurate — Burak and Fiete 2009'},
-  infolimit:{n:200,sig:1.0,noise:2.0,align:.9,dim:15,gain:1.0,mux:2,rho:.3,diffcorr:.8,fano:1.4,sparse:.5,fidelity:'approximate — Moreno-Bote Fig 3 replication'},
+  grid:{n:100,sig:3.0,noise:.8,align:.1,dim:2,gain:1.0,mux:1,rho:.02,diffcorr:.05,fano:1.0,sparse:.7,fidelity:'publication_accurate — Burak and Fiete 2009'},
+  infolimit:{n:200,sig:1.0,noise:2.0,align:.9,dim:15,gain:1.0,mux:2,rho:.3,diffcorr:.8,fano:1.4,sparse:.5,fidelity:'approximate — Moreno-Bote Fig 3'},
 };
-function applyPreset(name){
-  const pr=PRESETS[name];if(!pr)return;
-  Object.keys(pr).forEach(k=>{if(k!=='fidelity')P[k]=pr[k];});
-  syncSliders();
-  const fb=document.getElementById('preset-fidelity');fb.textContent='Fidelity: '+pr.fidelity;fb.classList.add('visible');
-  compute();
-}
+function applyPreset(name){const pr=PRESETS[name];if(!pr)return;Object.keys(pr).forEach(k=>{if(k!=='fidelity')P[k]=pr[k];});syncSliders();const fb=document.getElementById('preset-fidelity');fb.textContent='Fidelity: '+pr.fidelity;fb.classList.add('visible');compute();}
 function syncSliders(){
   const map={n:'sn',sig:'ssig',noise:'snoise',align:'salign',dim:'sdim',gain:'sgain',mux:'smux',rho:'srho',diffcorr:'sdiffcorr',fano:'sfano',sparse:'ssparse',thresh:'sthresh',trials:'strials',boot:'sboot',bins:'sbins',res:'sres',phi:'sphi',ouv:'souv',remap:'sremap',epochs:'sepochs'};
   const vmap={n:'vn',sig:'vsig',noise:'vnoise',align:'valign',dim:'vdim',gain:'vgain',mux:'vmux',rho:'vrho',diffcorr:'vdiffcorr',fano:'vfano',sparse:'vsparse',thresh:'vthresh',trials:'vtrials',boot:'vboot',bins:'vbins',res:'vres',phi:'vphi',ouv:'vouv',remap:'vremap',epochs:'vepochs'};
@@ -613,21 +663,36 @@ function syncSliders(){
   Object.keys(map).forEach(k=>{const sl=document.getElementById(map[k]);const vl=document.getElementById(vmap[k]);if(sl&&P[k]!==undefined){sl.value=P[k];if(vl)vl.textContent=fmt[k]?fmt[k](P[k]):P[k];}});
 }
 function applyDriftTemplate(t){
-  const templates={stable:{phi:.1,ouv:.02,remap:.02,drifttype:'ar1'},hippocampal:{phi:.8,ouv:.15,remap:.2,drifttype:'remap'},motor:{phi:.5,ouv:.3,remap:.05,drifttype:'ou'},theta:{phi:.6,ouv:.1,remap:.05,drifttype:'oscillatory'}};
-  const tmpl=templates[t];if(!tmpl)return;
-  Object.assign(P,tmpl);document.getElementById('sdrifttype').value=P.drifttype;syncSliders();compute();
+  const tmpl={stable:{phi:.95,ouv:.02,remap:.02,drifttype:'ar1'},hippocampal:{phi:.8,ouv:.15,remap:.2,drifttype:'remap'},motor:{phi:.5,ouv:.3,remap:.05,drifttype:'ou'},theta:{phi:.6,ouv:.1,remap:.05,drifttype:'oscillatory'}}[t];
+  if(!tmpl)return;Object.assign(P,tmpl);document.getElementById('sdrifttype').value=P.drifttype;syncSliders();compute();
 }
 function validateSysA(){Object.assign(P,{align:0,n:100,sig:2,noise:1,gain:1,mux:1,dim:8,rho:0,diffcorr:0,fano:1,sparse:.5,thresh:1});syncSliders();compute();logRun();alert(`Sys A: K=${lastM.K.toFixed(3)} (expect 1.000)  acc=${lastM.acc.toFixed(1)}% (expect 97.1%)`);}
 function validateSysB(){Object.assign(P,{align:1,n:100,sig:2,noise:1,gain:1,mux:1,dim:8,rho:0,diffcorr:0,fano:1,sparse:.5,thresh:1});syncSliders();compute();logRun();alert(`Sys B: K=${lastM.K.toFixed(3)} (expect 0.370)  acc=${lastM.acc.toFixed(1)}% (expect 78.0%)`);}
-function exportJSON(){if(!lastM)return;const out={run_id:'pcl_'+Date.now(),params:{...P},metrics:{...lastM},narrative:`K=${lastM.K.toFixed(3)} regime=${lastM.regime} acc=${lastM.acc.toFixed(1)}%`,references_cited:['Stabler 2026','Seung & Sompolinsky 1993','Panzeri & Treves 1996','Moreno-Bote et al 2014','Gao & Ganguli 2017','Nili et al 2014'],diagnostics:{infoLimiting:lastM.infoLimiting,corrEntropy:lastM.Hcorr},suggested_next_runs:['Sweep alpha 0-1','Increase N to test scaling','Apply Info-Limit preset']};dl(JSON.stringify(out,null,2),'pcl_run.json','application/json');}
-function exportCSV(){if(!lastM)return;const m=lastM;const rows=[['param','value'],['N',P.n],['sig',P.sig],['noise',P.noise],['align',P.align],['',''],['metric','value'],['K',m.K],['rawMI',m.rawMI],['bcMI',m.bcMI],['navMI',m.navMI],['FI',m.FI],['CC',m.CC],['PR',m.PR],['navFrac',m.navFrac],['acc',m.acc],['DCI',m.DCI],['ceilAcc',m.ceilAcc]];dl(rows.map(r=>r.join(',')).join('\n'),'pcl_run.csv','text/csv');}
-function exportPython(){dl(`import json\n\ndef load_pcl(path):\n    with open(path) as f:\n        return json.load(f)\n\nrun = load_pcl('pcl_run.json')\nK = run['metrics']['K']\nprint(f'K={K:.3f}  regime={run[\"metrics\"][\"regime\"]}')\n`,'pcl_stub.py','text/plain');}
+
+// ── Exports ───────────────────────────────────────────────────────────────────
 function dl(content,filename,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type}));a.download=filename;a.click();}
+function exportJSON(){
+  if(!lastM)return;const ci=lastCI||{};
+  const out={run_id:'pcl_'+Date.now(),params:{...P},metrics:{...lastM},bootstrap_ci:{K:ci.K,rawMI:ci.rawMI,FI:ci.FI,acc:ci.acc,n_boot:P.boot},narrative:`K=${lastM.K.toFixed(3)} regime=${lastM.regime} acc=${lastM.acc.toFixed(1)}%`,references_cited:['Stabler 2026','Seung & Sompolinsky 1993','Panzeri & Treves 1996','Moreno-Bote et al 2014','Gao & Ganguli 2017','Nili et al 2014'],diagnostics:{infoLimiting:lastM.infoLimiting,corrEntropy:lastM.Hcorr},nwb_metadata:{session_description:'Population Code Lab run',identifier:'pcl_'+Date.now(),session_start_time:new Date().toISOString(),lab:'RandolphPelican',experimenter:'Stabler 2026'},suggested_next_runs:['Sweep alpha 0-1','Increase N to test scaling','Apply Info-Limit preset']};
+  dl(JSON.stringify(out,null,2),'pcl_run.json','application/json');
+}
+function exportCSV(){
+  if(!lastM)return;const m=lastM,ci=lastCI||{};
+  const rows=[['param','value'],['N',P.n],['sig',P.sig],['noise',P.noise],['align',P.align],['',''],['metric','value','ci_lo','ci_hi'],['K',m.K,ci.K?ci.K[0]:'',ci.K?ci.K[1]:''],['rawMI',m.rawMI,ci.rawMI?ci.rawMI[0]:'',ci.rawMI?ci.rawMI[1]:''],['bcMI',m.bcMI,'',''],['navMI',m.navMI,'',''],['FI',m.FI,ci.FI?ci.FI[0]:'',ci.FI?ci.FI[1]:''],['CC',m.CC,'',''],['PR',m.PR,'',''],['navFrac',m.navFrac,'',''],['acc',m.acc,ci.acc?ci.acc[0]:'',ci.acc?ci.acc[1]:''],['DCI',m.DCI,'',''],['ceilAcc',m.ceilAcc,'','']];
+  dl(rows.map(r=>r.join(',')).join('\n'),'pcl_run.csv','text/csv');
+}
+function exportParquet(){
+  if(!lastM)return;const m=lastM,ci=lastCI||{};
+  const out={schema_version:'1.0',format:'parquet-schema-json',tensorboard_metadata:{tag:'population_code_lab',step:Date.now()},fields:[{name:'coherent_fraction',type:'float64',value:m.K,ci_lo:ci.K?ci.K[0]:null,ci_hi:ci.K?ci.K[1]:null},{name:'raw_mi',type:'float64',value:m.rawMI},{name:'bias_corrected_mi',type:'float64',value:m.bcMI},{name:'navigable_mi',type:'float64',value:m.navMI},{name:'fisher_information',type:'float64',value:m.FI},{name:'channel_capacity',type:'float64',value:m.CC},{name:'participation_ratio',type:'float64',value:m.PR},{name:'navigable_fraction',type:'float64',value:m.navFrac},{name:'decode_accuracy',type:'float64',value:m.acc},{name:'diff_corr_index',type:'float64',value:m.DCI},{name:'noise_ceiling',type:'float64',value:m.ceilAcc},{name:'regime',type:'string',value:m.regime}],params:{...P},hdf5_conversion_hint:'pandas.read_json then df.to_hdf("run.h5",key="pcl")'};
+  dl(JSON.stringify(out,null,2),'pcl_run_parquet.json','application/json');
+}
+function exportPython(){dl(`import json\n\ndef load_pcl(path):\n    with open(path) as f:\n        return json.load(f)\n\nrun = load_pcl('pcl_run.json')\nK = run['metrics']['K']\nci = run['bootstrap_ci']['K']  # [lo, hi]\nprint(f'K={K:.3f}  95% CI=[{ci[0]:.3f},{ci[1]:.3f}]  regime={run[\"metrics\"][\"regime\"]}')\n`,'pcl_stub.py','text/plain');}
 function shareURL(){const keys=['n','sig','noise','align','dim','gain','mux','thresh','rho','diffcorr','fano','sparse'];const params=keys.map(k=>k+'='+P[k]).join('&');const url=location.href.split('?')[0]+'?'+params;navigator.clipboard.writeText(url).then(()=>alert('URL copied')).catch(()=>prompt('Share URL:',url));}
 function loadFromURL(){const sp=new URLSearchParams(location.search);sp.forEach((v,k)=>{if(P[k]!==undefined)P[k]=parseFloat(v)||P[k];});syncSliders();}
 function saveScenario(){const name=prompt('Scenario name:','run1');if(!name)return;localStorage.setItem('pcl_'+name,JSON.stringify(P));alert('Saved: '+name);}
 function loadScenario(){const name=prompt('Load scenario name:');if(!name)return;const s=localStorage.getItem('pcl_'+name);if(!s){alert('Not found');return;}Object.assign(P,JSON.parse(s));syncSliders();compute();}
 function loadPreset(){const name=prompt('Preset (v1/mt/pfc/hpc/grid/infolimit):');if(name)applyPreset(name);}
+
 loadFromURL();
 drawHmEmpty();
 </script>
