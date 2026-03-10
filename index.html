@@ -453,6 +453,9 @@ select:focus{border-color:var(--accent)}
 
 <script>
 "use strict";
+// ══════════════════════════════════════════════════
+//  INTRO
+// ══════════════════════════════════════════════════
 const iC=document.getElementById('intro-canvas'),iX=iC.getContext('2d');
 let introOn=true;
 function riC(){iC.width=innerWidth;iC.height=innerHeight}
@@ -476,31 +479,189 @@ function skipIntro(){
   if(!introOn)return;introOn=false;
   const el=document.getElementById('intro');
   el.style.transition='opacity .8s ease';el.style.opacity='0';
-  setTimeout(()=>{el.style.display='none';document.getElementById('app').classList.add('visible');if(typeof compute==='function')compute();},800);
+  setTimeout(()=>{el.style.display='none';document.getElementById('app').classList.add('visible');compute();drawPrimary();drawSecondary();drawHmEmpty();requestAnimationFrame(animLoop);},800);
 }
 function switchTab(name){
   document.querySelectorAll('.stab').forEach(t=>t.classList.toggle('active',t.dataset.tab===name));
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active',p.id==='tab-'+name));
 }
 document.getElementById('cbnonstat').addEventListener('change',function(){document.getElementById('nonstat-controls').style.display=this.checked?'block':'none';});
-function setPrimaryChart(v){console.log('primary:',v)}
-function setSecondaryChart(v){console.log('secondary:',v)}
-function compute(){}
-function runSweep(){}
-function stopSweep(){}
-function exportJSON(){}
-function exportCSV(){}
-function exportParquet(){}
-function exportPython(){}
-function clearLog(){document.getElementById('log-scroll').innerHTML='';document.getElementById('log-count').textContent='0 runs';}
-function saveScenario(){}
-function loadScenario(){}
-function loadPreset(){}
-function shareURL(){}
-function applyPreset(p){console.log('preset:',p)}
-function applyDriftTemplate(t){console.log('drift:',t)}
-function validateSysA(){}
-function validateSysB(){}
-</script>
-</body>
-</html>
+
+// ══════════════════════════════════════════════════
+//  MATH ENGINE — Stabler 2026 + literature
+// ══════════════════════════════════════════════════
+// K = I_nav / H_max(sig2_task)
+// sig2_task = sn2 * (alpha + (1-alpha)/N)
+// H_max = 0.5 * log(2*pi*e * sig2_task) / log(2)  [bits]
+// navFrac = 1 - normCDF(theta*1.645 - sqrt(SNR))
+// I_nav = navFrac * 0.5 * log2(1 + SNR)
+// K = clamp(I_nav / H_max, 0, 1)
+// FI correlated = N * sigEff^2 * g^2 / (sig2_task * m * dF)
+// PR = (sum_lambda)^2 / sum_lambda^2  [Gao & Ganguli 2017]
+// DCI = alpha * diffcorr  [Moreno-Bote 2014 proxy]
+// H_corr = -sum( lhat * log(lhat) )  [correlation entropy]
+
+const TWO_PI_E=2*Math.PI*Math.E, LOG2=Math.log(2);
+
+function normCDF(x){
+  const t=1/(1+.2316419*Math.abs(x));
+  const d=.3989422820*Math.exp(-x*x/2);
+  const p=d*t*(.3193815301+t*(-.3565637914+t*(1.7814779372+t*(-1.8212559978+t*1.3302744929))));
+  return x>0?1-p:p;
+}
+
+// Bootstrap CI helper — returns [mean, lo95, hi95]
+function bootstrapCI(vals, B=200){
+  if(!vals||!vals.length)return[0,0,0];
+  const n=vals.length, means=[];
+  for(let b=0;b<B;b++){
+    let s=0;
+    for(let i=0;i<n;i++) s+=vals[Math.floor(Math.random()*n)];
+    means.push(s/n);
+  }
+  means.sort((a,b)=>a-b);
+  return[vals.reduce((a,v)=>a+v,0)/n, means[Math.floor(.025*B)], means[Math.floor(.975*B)]];
+}
+
+// Covariance eigenspectrum (parametric)
+// d signal dims with lambda_s, N-d noise dims with lambda_n
+function eigenspectrum(p){
+  const{n,sig,noise,align,dim,gain}=p;
+  const sigEff=sig*gain, sn2=noise*noise;
+  const d=Math.min(dim,n);
+  const ls=sigEff*sigEff+sn2/Math.max(n,1);
+  const ln=sn2/Math.max(n,1);
+  return{ls,ln,d,n};
+}
+
+// Correlation entropy H_corr = -sum(lhat*log(lhat))
+// Low H_corr = structured correlations = independence assumption suspect
+function corrEntropy(p){
+  const{ls,ln,d,n}=eigenspectrum(p);
+  const total=d*ls+(n-d)*ln;
+  if(total<=0)return 0;
+  let H=0;
+  const ps=ls/total, pn=ln/total;
+  if(ps>0) H-=d*ps*Math.log(ps);
+  if(pn>0&&n-d>0) H-=(n-d)*pn*Math.log(pn);
+  return H/Math.log(n);  // normalized 0-1
+}
+
+function computeMetrics(p){
+  const{n,sig,noise,align,dim,gain,mux,drift,thresh,rho,diffcorr,fano,sparse}=p;
+  const sigEff=sig*gain;
+  const sn2=noise*noise;
+  const dF=1+drift*2;
+  const muxF=Math.max(mux,1);
+
+  // sig2_task — noise variance on task axis (Stabler 2026 §2.3)
+  // alpha blends aligned (task-parallel) vs isotropic noise
+  // rho adds uniform correlation floor
+  // diffcorr adds differential correlation component (Moreno-Bote 2014)
+  const sig2task_base=sn2*(align+(1-align)/Math.max(n,1));
+  const sig2task_rho=sig2task_base*(1+rho*Math.sqrt(n));
+  const sig2task=sig2task_rho*dF*muxF*(1+diffcorr*align);
+
+  // H_max — differential entropy of Gaussian noise on task axis [bits]
+  const Hmax=.5*Math.log(TWO_PI_E*Math.max(sig2task,1e-12))/LOG2;
+
+  // SNR on task axis
+  const SNR=Math.max(sigEff*sigEff/Math.max(sig2task,1e-12),0);
+
+  // Raw MI — binned estimator proxy: 0.5*log2(1+SNR)
+  const rawMI=Math.max(0,.5*Math.log2(1+SNR));
+
+  // Bias-corrected MI — quadratic extrapolation (Panzeri et al. 2007)
+  // approximated as rawMI * (1 - 1/(2*N_eff))
+  const Neff=Math.max(n*p.trials/100,1);
+  const bcMI=Math.max(0,rawMI*(1-1/(2*Neff)));
+
+  // Navigable fraction — permutation null criterion (Stabler 2026 §2.2)
+  const navFrac=Math.max(0,Math.min(1,1-normCDF(thresh*1.645-Math.sqrt(SNR))));
+
+  // Navigable MI
+  const navMI=navFrac*rawMI;
+
+  // K — clamped [0,1]; Hmax<=0 means task-axis noise sub-1-bit → maximally coherent
+  const K=Hmax<=0?1.0:Math.min(1.0,navMI/Hmax);
+
+  // Fisher Information — correlated form f'T Sigma-1 f' (Seung & Sompolinsky 1993)
+  // full correlated: J = N * sigEff^2 / (sig2task * mux * dF)
+  // sparseness reduces effective contributing neurons
+  const Neff2=n*Math.max(sparse,.1);
+  const FI=Neff2*sigEff*sigEff/Math.max(sig2task*muxF*dF,1e-12);
+
+  // Fano factor correction on FI
+  const FI_fano=FI/Math.max(fano,0.1);
+
+  // Channel Capacity (Shannon-Hartley in task subspace)
+  const CC=Math.max(0,.5*Math.log2(1+FI_fano/Math.max(dim,1)));
+
+  // Participation Ratio — from parametric eigenspectrum (Gao & Ganguli 2017)
+  const{ls,ln,d}=eigenspectrum(p);
+  const sumL=d*ls+(n-d)*ln;
+  const sumL2=d*ls*ls+(n-d)*ln*ln;
+  const PR=sumL*sumL/Math.max(sumL2,1e-12);
+
+  // Differential Correlation Index — magnitude of noise projection onto
+  // signal manifold (Moreno-Bote et al. 2014 proxy)
+  const DCI=Math.min(1,align*diffcorr+align*rho);
+
+  // Information-limiting regime: FI/MI ratio > 2 AND DCI > 0.3
+  const infoLimiting=FI_fano/Math.max(rawMI+.001,1e-12)>2.0&&DCI>0.3;
+
+  // Correlation entropy (independence diagnostic)
+  const Hcorr=corrEntropy(p);
+
+  // Noise ceiling — upper bound noiseless decoder (Nili et al. 2014)
+  // approximated as accuracy at alpha=0, full signal
+  const ceilSNR=sigEff*sigEff/Math.max(sn2/Math.max(n,1),1e-12);
+  const ceilAcc=normCDF(Math.min(Math.sqrt(ceilSNR)*.5,2.5))*100;
+
+  // Accuracy — 2-step integration task (Stabler 2026 §2.4)
+  const dpr=Math.min(Math.sqrt(SNR*navFrac)*.5,1.88);
+  const acc=normCDF(dpr)*100;
+
+  // Regime classification
+  const regime=
+    K>=.85&&acc>88?'COHERENT':
+    infoLimiting?'INFO-LIMITED':
+    K>=.6?'MIXED':
+    align>.7?'NOISE-ALIGNED':
+    dim>25?'HIGH-DIM':
+    'FRAGMENTED';
+
+  // State space
+  const tot=Math.pow(2,Math.max(0,CC));
+  const nav=Math.max(1,tot*navFrac);
+
+  // Covariance regularization flag
+  const sigularFlag=sig2task<1e-6;
+
+  return{
+    K,rawMI,bcMI,navMI,FI:FI_fano,CC,PR,navFrac,acc,DCI,
+    sig2task,Hmax,SNR,Hcorr,ceilAcc,
+    tot,nav,regime,infoLimiting,sigularFlag,
+    // raw arrays for bootstrap (proxy — single-point in parametric model)
+    _K:[K],_FI:[FI_fano],_PR:[PR],_acc:[acc]
+  };
+}
+
+// ══════════════════════════════════════════════════
+//  PARAMETERS + SLIDERS
+// ══════════════════════════════════════════════════
+const P={
+  n:100, sig:2.0, noise:1.0, align:.2, dim:8,
+  gain:1.0, mux:1, drift:0.0, thresh:1.0,
+  rho:.1, diffcorr:0.0, fano:1.0, sparse:.5,
+  trials:500, boot:200, bins:20,
+  split:.8, cv:5,
+  epochs:20, phi:.8, ouv:.1, remap:.2,
+  res:15
+};
+
+const SL=[
+  {k:'n',      id:'sn',      vi:'vn',      f:v=>Math.round(v)},
+  {k:'sig',    id:'ssig',    vi:'vsig',    f:v=>v.toFixed(2)},
+  {k:'pref',   id:'spref',   vi:'vpref',   f:v=>Math.round(v)+'deg'},
+  {k:'sparse
