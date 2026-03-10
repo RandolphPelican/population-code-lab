@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Population Code Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg0:#020c14;--bg1:#051018;--bg2:#081824;--bg3:#0d2035;
+  --panel:#0a1e2e;--panel2:#0f2840;
+  --accent:#00d1ff;--a2:#7cf2c6;
+  --gold:#ffcc33;--gold2:#ffaa00;
+  --red:#ff4455;--purple:#a855f7;
+  --text:#c8e0f0;--dim:#5a8aaa;--border:#1a3a55;
+  --glow:rgba(0,209,255,0.10);--warn:rgba(255,170,0,0.15);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;width:100%;background:var(--bg0);color:var(--text);font-family:'Space Mono',monospace;font-size:11px;overflow:hidden}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.022) 2px,rgba(0,0,0,0.022) 4px);pointer-events:none;z-index:9000}
+#intro{position:fixed;inset:0;z-index:9999;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;cursor:pointer}
+#intro-canvas{position:absolute;inset:0;width:100%;height:100%}
+.intro-inner{position:relative;z-index:2;text-align:center;opacity:0;animation:fadeUp 1s ease 2s forwards}
+.intro-lion{font-size:90px;line-height:1;margin-bottom:20px;opacity:0;animation:lionDrop 1.2s cubic-bezier(.17,.67,.35,1.3) 0.8s forwards;filter:drop-shadow(0 0 30px var(--gold)) drop-shadow(0 0 80px rgba(255,204,51,0.4))}
+.intro-studio{font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:.5em;color:var(--gold);text-transform:uppercase;margin-bottom:5px}
+.intro-presents{font-size:9px;color:var(--dim);letter-spacing:.25em;margin-bottom:28px}
+.intro-title{font-family:'Syne',sans-serif;font-size:clamp(30px,5vw,56px);font-weight:800;line-height:1.1;color:#fff;text-shadow:0 0 60px var(--accent),0 0 120px rgba(0,209,255,.2)}
+.intro-title em{color:var(--gold);font-style:normal}
+.intro-sub{font-size:10px;color:var(--a2);letter-spacing:.2em;margin-top:10px}
+.intro-skip{position:absolute;bottom:28px;right:28px;font-size:9px;color:var(--dim);letter-spacing:.15em;border:1px solid var(--border);padding:5px 12px;opacity:0;animation:fadeUp .5s ease 2.6s forwards;cursor:pointer;transition:color .2s,border-color .2s}
+.intro-skip:hover{color:var(--gold);border-color:var(--gold)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes lionDrop{from{opacity:0;transform:scale(.4) rotate(-15deg)}60%{transform:scale(1.1) rotate(3deg)}to{opacity:1;transform:scale(1) rotate(0deg)}}
+#app{display:flex;flex-direction:column;height:100vh;opacity:0;pointer-events:none;transition:opacity .8s ease}
+#app.visible{opacity:1;pointer-events:all}
+#top-bar{display:flex;align-items:center;justify-content:space-between;padding:7px 16px;flex-shrink:0;background:var(--bg2);border-bottom:1px solid var(--border)}
+.brand-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:var(--gold);letter-spacing:.05em}
+.brand-sub{font-size:9px;color:var(--dim);letter-spacing:.07em;margin-top:1px}
+.brand-sub a{color:var(--a2);text-decoration:none}
+.brand-sub a:hover{text-decoration:underline}
+.top-right{display:flex;gap:8px;align-items:center}
+.pill{font-size:9px;letter-spacing:.1em;border:1px solid;padding:3px 9px;cursor:pointer;transition:all .15s;font-family:'Space Mono',monospace}
+.pill-accent{color:var(--a2);border-color:rgba(124,242,198,.3)}
+.pill-accent:hover{background:rgba(124,242,198,.08);border-color:var(--a2)}
+.pill-gold{color:var(--gold);border-color:rgba(255,204,51,.3)}
+.pill-gold:hover{background:rgba(255,204,51,.08);border-color:var(--gold)}
+.pill-dim{color:var(--dim);border-color:var(--border)}
+.pill-dim:hover{color:var(--accent);border-color:var(--accent)}
+#body-row{display:flex;flex:1;overflow:hidden;min-height:0}
+#sidebar{width:272px;min-width:272px;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+#sidebar-tabs{display:flex;flex-shrink:0;border-bottom:1px solid var(--border)}
+.stab{flex:1;padding:7px 4px;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);background:var(--bg2);border-right:1px solid var(--border);cursor:pointer;transition:all .15s;text-align:center}
+.stab:last-child{border-right:none}
+.stab.active{color:var(--gold);background:var(--panel);border-bottom:2px solid var(--gold)}
+.stab:hover:not(.active){color:var(--text);background:var(--bg3)}
+.sb-scroll{flex:1;overflow-y:auto;padding:8px 11px 80px;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+.sec{font-family:'Syne',sans-serif;font-size:8px;font-weight:700;letter-spacing:.25em;color:var(--accent);text-transform:uppercase;padding:9px 0 4px;border-bottom:1px solid var(--border);margin-bottom:7px}
+.sl{margin-bottom:9px}
+.sl-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
+.sl-name{color:var(--text);font-size:10px}
+.sl-val{color:var(--gold);font-size:10px;font-weight:700;min-width:40px;text-align:right}
+input[type=range]{width:100%;height:3px;-webkit-appearance:none;appearance:none;background:var(--bg3);border-radius:2px;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);cursor:pointer;transition:background .15s}
+input[type=range]::-webkit-slider-thumb:hover{background:var(--gold);box-shadow:0 0 12px var(--gold)}
+select{width:100%;padding:5px 7px;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:'Space Mono',monospace;font-size:9px;cursor:pointer;outline:none}
+select:focus{border-color:var(--accent)}
+.sel-row{display:flex;gap:6px;align-items:center;margin-bottom:5px}
+.sel-lbl{font-size:9px;color:var(--dim);width:14px}
+.btn-row{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap}
+.btn{flex:1;padding:6px 5px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--border);background:var(--bg3);color:var(--text);cursor:pointer;transition:all .15s}
+.btn:hover{border-color:var(--accent);color:var(--accent);background:var(--glow)}
+.btn.gold{border-color:var(--gold2);color:var(--gold)}
+.btn.gold:hover{background:rgba(255,170,0,.1)}
+.btn.green{border-color:var(--a2);color:var(--a2)}
+.btn.green:hover{background:rgba(124,242,198,.08)}
+.btn.danger{border-color:rgba(255,68,85,.4);color:var(--red)}
+.btn.danger:hover{background:rgba(255,68,85,.08)}
+.btn.purple{border-color:rgba(168,85,247,.4);color:var(--purple)}
+.btn.purple:hover{background:rgba(168,85,247,.08)}
+.warn-banner{display:none;padding:6px 8px;margin-bottom:6px;background:var(--warn);border:1px solid var(--gold2);font-size:9px;color:var(--gold);line-height:1.6}
+.warn-banner.visible{display:block}
+.chk-row{display:flex;align-items:center;gap:7px;margin-bottom:8px;cursor:pointer}
+.chk-row input[type=checkbox]{cursor:pointer;accent-color:var(--accent)}
+.chk-row label{font-size:10px;color:var(--text);cursor:pointer}
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+#metrics-rail{display:flex;gap:1px;background:var(--bg0);border-bottom:1px solid var(--border);flex-shrink:0}
+.tip{position:relative}
+.tip::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 5px);left:50%;transform:translateX(-50%);background:var(--bg3);color:var(--text);font-size:9px;padding:5px 9px;white-space:nowrap;z-index:500;border:1px solid var(--border);pointer-events:none;opacity:0;transition:opacity .15s}
+.tip:hover::after{opacity:1}
+.mc{flex:1;padding:7px 8px;background:var(--panel);cursor:default;position:relative;overflow:hidden;transition:background .2s}
+.mc:hover{background:var(--panel2)}
+.mc::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .4s ease}
+.mc.flash::after{transform:scaleX(1)}
+.ml{font-size:7.5px;color:var(--dim);letter-spacing:.1em;text-transform:uppercase}
+.mv{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--accent);line-height:1.2;transition:color .3s}
+.mv.gold{color:var(--gold)}.mv.green{color:var(--a2)}.mv.red{color:var(--red)}
+.mci{font-size:8px;color:var(--dim);margin-top:1px}
+.mu{font-size:8px;color:var(--dim)}
+.k-bar{position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--bg3)}
+.k-bar-fill{height:100%;background:linear-gradient(90deg,var(--red),var(--gold),var(--a2));transition:width .4s ease}
+#diag-bar{display:none;padding:4px 14px;flex-shrink:0;background:rgba(255,170,0,.08);border-bottom:1px solid var(--gold2);font-size:9px;color:var(--gold2);gap:16px;flex-wrap:wrap}
+#diag-bar.visible{display:flex}
+.diag-item{display:flex;gap:5px;align-items:center}
+#state-bar{display:flex;gap:16px;align-items:center;padding:4px 12px;flex-shrink:0;background:var(--bg2);border-bottom:1px solid var(--border);font-size:9px}
+.si{display:flex;gap:5px;align-items:center}
+.sl2{color:var(--dim)}.sv{color:var(--a2);font-weight:700}
+.regime{padding:2px 8px;font-family:'Syne',sans-serif;font-size:9px;font-weight:700;letter-spacing:.1em;color:var(--gold);border:1px solid var(--gold2)}
+#state-bar .sp{flex:1}
+.pref{font-size:8px;color:var(--dim)}
+.pref a{color:var(--accent);text-decoration:none}
+.pref a:hover{text-decoration:underline}
+#charts{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:1px;background:var(--bg0);overflow:hidden;min-height:0}
+.cp{background:var(--panel);display:flex;flex-direction:column;overflow:hidden}
+.ch{padding:5px 10px;flex-shrink:0;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:9px;color:var(--dim);letter-spacing:.1em;text-transform:uppercase}
+.ch .badge{color:var(--accent);font-size:8px}
+.chart-sel{font-size:8px;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:'Space Mono',monospace;padding:2px 5px;cursor:pointer;width:auto}
+.chart-sel:focus{outline:none;border-color:var(--accent)}
+.cw{flex:1;position:relative;min-height:0}
+.cw canvas{position:absolute;inset:0;width:100%;height:100%}
+#log-scroll{flex:1;overflow-y:auto;padding:5px 8px;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.lr{display:flex;gap:7px;align-items:baseline;font-size:9px;line-height:1.9;border-bottom:1px solid rgba(26,58,85,.3);padding:1px 0}
+.lr-tag{color:var(--accent);opacity:.55;font-size:8px;min-width:72px}
+.lr-k{color:var(--gold);font-weight:700}
+.lr-acc{color:var(--a2)}
+.lr-dim{color:var(--dim)}
+#compare-panel{display:none;border-top:1px solid var(--border);flex-shrink:0;max-height:140px;overflow:auto}
+#compare-panel.visible{display:block}
+#compare-table{width:100%;border-collapse:collapse;font-size:9px}
+#compare-table th{padding:5px 10px;background:var(--bg2);color:var(--a2);font-weight:700;border-bottom:1px solid var(--border);text-align:left;position:sticky;top:0}
+#compare-table td{padding:4px 10px;border-bottom:1px solid rgba(26,58,85,.3);color:var(--text)}
+#compare-table td.better{color:var(--a2)}
+#compare-table td.worse{color:var(--red)}
+#status-bar{position:fixed;bottom:0;left:272px;right:0;height:22px;background:rgba(2,12,20,.95);border-top:1px solid var(--border);display:flex;align-items:center;padding:0 13px;gap:16px;z-index:800;font-size:9px}
+.sbi{color:var(--dim)}.sbi span{color:var(--a2)}
+.sbi.right{margin-left:auto}
+</style>
+</head>
+<body>
+
+<div id="intro" onclick="skipIntro()">
+  <canvas id="intro-canvas"></canvas>
+  <div class="intro-inner">
+    <div class="intro-studio">Randolph Pelican III</div>
+    <div class="intro-presents">presents</div>
+    <div class="intro-lion">🦁</div>
+    <div class="intro-title">Population<br><em>Code Lab</em></div>
+    <div class="intro-sub">Neural Geometry &nbsp;·&nbsp; Information Theory &nbsp;·&nbsp; Representational Dynamics</div>
+  </div>
+  <div class="intro-skip">[&nbsp;SKIP&nbsp;]</div>
+</div>
+
+<div id="app">
+  <div id="top-bar">
+    <div>
+      <div class="brand-name">⬡ POPULATION CODE LAB</div>
+      <div class="brand-sub">
+        <a href="https://github.com/RandolphPelican/population-code-lab" target="_blank">RandolphPelican</a>
+        &nbsp;·&nbsp; Neural Geometry Sandbox v1.0
+      </div>
+    </div>
+    <div class="top-right">
+      <div class="pill pill-dim"    onclick="loadPreset()">⊞ PRESETS</div>
+      <div class="pill pill-dim"    onclick="saveScenario()">⊕ SAVE</div>
+      <div class="pill pill-dim"    onclick="loadScenario()">⊙ LOAD</div>
+      <div class="pill pill-accent" onclick="shareURL()">⬡ SHARE</div>
+      <div class="pill pill-gold"   onclick="exportJSON()">⬇ EXPORT</div>
+    </div>
+  </div>
+
+  <div id="body-row">
+    <div id="sidebar">
+      <div id="sidebar-tabs">
+        <div class="stab active" data-tab="pop"    onclick="switchTab('pop')">Pop</div>
+        <div class="stab"        data-tab="noise"  onclick="switchTab('noise')">Noise</div>
+        <div class="stab"        data-tab="decode" onclick="switchTab('decode')">Decode</div>
+        <div class="stab"        data-tab="sweep"  onclick="switchTab('sweep')">Sweep</div>
+      </div>
+      <div class="sb-scroll">
+
+        <div id="tab-pop" class="tab-panel active">
+          <div class="sec">Population Architecture</div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">N Neurons</span><span class="sl-val" id="vn">100</span></div><input type="range" id="sn" min="10" max="500" step="10" value="100"></div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">Signal Strength σ_s</span><span class="sl-val" id="vsig">2.00</span></div><input type="range" id="ssig" min="0.1" max="5.0" step="0.05" value="2.0"></div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">Tuning Width σ_pref</span><span class="sl-val" id="vpref">15°</span></div><input type="range" id="spref" min="2" max="60" step="1" value="15"></div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">Sparseness Index</span><span class="sl-val" id="vsparse">0.50</span></div><input type="range" id="ssparse" min="0.0" max="1.0" step="0.01" value="0.5"></div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">Fano Factor</span><span class="sl-val" id="vfano">1.00</span></div><input type="range" id="sfano" min="0.1" max="3.0" step="0.05" value="1.0"></div>
+          <div class="sl-row" style="margin-bottom:4px"><span class="sl-name" style="font-size:9px;color:var(--dim)">Tuning Family</span></div>
+          <select id="stuning">
+            <option value="gaussian" selected>Gaussian</option>
+            <option value="vonmises">Von Mises (circular)</option>
+            <option value="sigmoid">Sigmoid</option>
+            <option value="cosine">Cosine</option>
+            <option value="heterogeneous">Heterogeneous mixture</option>
+          </select>
+          <div class="sl-row" style="margin:6px 0 4px"><span class="sl-name" style="font-size:9px;color:var(--dim)">Manifold Topology</span></div>
+          <select id="smanifold">
+            <option value="linear" selected>Linear R1</option>
+            <option value="circular">Circular S1</option>
+            <option value="toroidal">Toroidal T2</option>
+          </select>
+          <div class="sec">Stimulus Space</div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">Dimensionality d_stim</span><span class="sl-val" id="vdim">8</span></div><input type="range" id="sdim" min="1" max="50" step="1" value="8"></div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">Stimulus Set N_s</span><span class="sl-val" id="vns">8</span></div><input type="range" id="sns" min="2" max="32" step="1" value="8"></div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">Mux Load m</span><span class="sl-val" id="vmux">1</span></div><input type="range" id="smux" min="1" max="8" step="1" value="1"></div>
+          <div class="sec">Gain and Modulation</div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">Attention Gain g</span><span class="sl-val" id="vgain">1.00</span></div><input type="range" id="sgain" min="1.0" max="10.0" step="0.1" value="1.0"></div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">Gain Heterogeneity</span><span class="sl-val" id="vgainhet">0.00</span></div><input type="range" id="sgainhet" min="0.0" max="1.0" step="0.01" value="0.0"></div>
+          <div class="sec">Estimation</div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">N Trials</span><span class="sl-val" id="vtrials">500</span></div><input type="range" id="strials" min="50" max="2000" step="50" value="500"></div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">N Bootstrap</span><span class="sl-val" id="vboot">200</span></div><input type="range" id="sboot" min="50" max="500" step="50" value="200"></div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">MI Bins</span><span class="sl-val" id="vbins">20</span></div><input type="range" id="sbins" min="5" max="50" step="1" value="20"></div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">Nav Threshold theta</span><span class="sl-val" id="vthresh">1.00</span></div><input type="range" id="sthresh" min="0.5" max="3.0" step="0.05" value="1.0"></div>
+        </div>
+
+        <div id="tab-noise" class="tab-panel">
+          <div class="sec">Noise Model</div>
+          <div class="sl-row" style="margin-bottom:4px"><span class="sl-name" style="font-size:9px;color:var(--dim)">Noise Type</span></div>
+          <select id="snoisetype">
+            <option value="poisson">Independent Poisson</option>
+            <option value="gaussian" selected>Independent Gaussian</option>
+            <option value="correlated">Correlated Gaussian</option>
+            <option value="multiplicative">Multiplicative</option>
+            <option value="ei_network">E/I Network (Vogels 2011)</option>
+          </select>
+          <div class="sl" style="margin-top:8px"><div class="sl-row"><span class="sl-name">Noise Magnitude sigma_n</span><span class="sl-val" id="vnoise">1.00</span></div><input type="range" id="snoise" min="0.1" max="5.0" step="0.05" value="1.0"></div>
+          <div class="sec">Correlation Structure</div>
+          <div id="warn-indep" class="warn-banner">Warning: Independence assumption may be invalid</div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">Noise Alignment alpha</span><span class="sl-val" id="valign">0.20</span></div><input type="range" id="salign" min="0.0" max="1.0" step="0.01" value="0.2"></div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">Global Corr rho</span><span class="sl-val" id="vrho">0.10</span></div><input type="range" id="srho" min="0.0" max="0.8" step="0.01" value="0.1"></div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">Diff Corr Magnitude</span><span class="sl-val" id="vdiffcorr">0.00</span></div><input type="range" id="sdiffcorr" min="0.0" max="1.0" step="0.01" value="0.0"></div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">Shared Noise Factors k</span><span class="sl-val" id="vfactors">1</span></div><input type="range" id="sfactors" min="1" max="10" step="1" value="1"></div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">Ltd-Range Length lambda</span><span class="sl-val" id="vlambda">0.30</span></div><input type="range" id="slambda" min="0.05" max="1.0" step="0.05" value="0.3"></div>
+          <div class="sec">Non-Stationary Dynamics</div>
+          <div class="chk-row">
+            <input type="checkbox" id="cbnonstat">
+            <label for="cbnonstat">Enable Non-Stationary Mode</label>
+          </div>
+          <div id="nonstat-controls" style="display:none">
+            <div class="sl-row" style="margin-bottom:4px"><span class="sl-name" style="font-size:9px;color:var(--dim)">Drift Process</span></div>
+            <select id="sdrifttype">
+              <option value="ar1">AR(1) autoregressive</option>
+              <option value="ou">Ornstein-Uhlenbeck</option>
+              <option value="remap">Abrupt remapping</option>
+              <option value="oscillatory">Oscillatory alignment</option>
+            </select>
+            <div style="margin-top:6px">
+              <div class="sl"><div class="sl-row"><span class="sl-name">N Epochs</span><span class="sl-val" id="vepochs">20</span></div><input type="range" id="sepochs" min="2" max="50" step="1" value="20"></div>
+              <div class="sl"><div class="sl-row"><span class="sl-name">AR(1) phi</span><span class="sl-val" id="vphi">0.80</span></div><input type="range" id="sphi" min="0.0" max="0.99" step="0.01" value="0.8"></div>
+              <div class="sl"><div class="sl-row"><span class="sl-name">OU Volatility sigma</span><span class="sl-val" id="vouv">0.10</span></div><input type="range" id="souv" min="0.01" max="1.0" step="0.01" value="0.1"></div>
+              <div class="sl"><div class="sl-row"><span class="sl-name">Remap Fraction</span><span class="sl-val" id="vremap">0.20</span></div><input type="range" id="sremap" min="0.0" max="1.0" step="0.05" value="0.2"></div>
+            </div>
+            <div style="font-size:9px;color:var(--dim);margin:4px 0 5px">Drift Templates:</div>
+            <div class="btn-row">
+              <button class="btn" onclick="applyDriftTemplate('stable')">Stable</button>
+              <button class="btn" onclick="applyDriftTemplate('hippocampal')">Hippo</button>
+              <button class="btn" onclick="applyDriftTemplate('motor')">Motor</button>
+              <button class="btn" onclick="applyDriftTemplate('theta')">Theta</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="tab-decode" class="tab-panel">
+          <div class="sec">Decoder</div>
+          <div class="sl-row" style="margin-bottom:4px"><span class="sl-name" style="font-size:9px;color:var(--dim)">Decoder Family</span></div>
+          <select id="sdecoder">
+            <option value="lda" selected>Linear (LDA)</option>
+            <option value="ml">Maximum Likelihood</option>
+            <option value="popvec">Population Vector</option>
+            <option value="bayes">Bayesian Optimal</option>
+            <option value="knn">k-NN</option>
+            <option value="rbf">RBF Kernel SVM</option>
+            <option value="dyensemble">DyEnsemble (adaptive)</option>
+            <option value="gpmd">GPMD (Gaussian Process)</option>
+          </select>
+          <div class="sec">Training</div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">Train/Test Split</span><span class="sl-val" id="vsplit">0.80</span></div><input type="range" id="ssplit" min="0.5" max="0.95" step="0.05" value="0.8"></div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">k-fold CV</span><span class="sl-val" id="vcv">5</span></div><input type="range" id="scv" min="2" max="10" step="1" value="5"></div>
+          <div class="chk-row">
+            <input type="checkbox" id="cbceiling" checked>
+            <label for="cbceiling">Compute noise ceiling</label>
+          </div>
+          <div class="sec">Optimization Target</div>
+          <select id="soptimtarget">
+            <option value="K" selected>K - coherent info fraction</option>
+            <option value="FI">Fisher Information</option>
+            <option value="MI">Mutual Information</option>
+          </select>
+          <div style="font-size:9px;color:var(--dim);margin-top:4px;line-height:1.7">Joint ascent on tuning params + noise structure. Cap 50 epochs.</div>
+          <div class="sec">Presets from Literature</div>
+          <div class="btn-row">
+            <button class="btn green"  onclick="applyPreset('v1')">V1</button>
+            <button class="btn green"  onclick="applyPreset('mt')">MT</button>
+            <button class="btn green"  onclick="applyPreset('pfc')">PFC</button>
+            <button class="btn green"  onclick="applyPreset('hpc')">HPC</button>
+          </div>
+          <div class="btn-row">
+            <button class="btn purple" onclick="applyPreset('grid')">Grid</button>
+            <button class="btn purple" onclick="applyPreset('infolimit')">Info-Limit</button>
+          </div>
+          <div id="preset-fidelity" class="warn-banner" style="margin-top:6px"></div>
+        </div>
+
+        <div id="tab-sweep" class="tab-panel">
+          <div class="sec">Parameter Sweep</div>
+          <div class="sel-row"><span class="sel-lbl">X:</span>
+            <select id="hm-x">
+              <option value="align" selected>Noise Align alpha</option>
+              <option value="n">N Neurons</option>
+              <option value="sig">Signal sigma_s</option>
+              <option value="noise">Noise sigma_n</option>
+              <option value="dim">Dimensionality</option>
+              <option value="gain">Attn Gain</option>
+              <option value="mux">Mux Load</option>
+              <option value="rho">Global rho</option>
+              <option value="diffcorr">Diff Corr</option>
+            </select>
+          </div>
+          <div class="sel-row"><span class="sel-lbl">Y:</span>
+            <select id="hm-y">
+              <option value="sig" selected>Signal sigma_s</option>
+              <option value="n">N Neurons</option>
+              <option value="noise">Noise sigma_n</option>
+              <option value="align">Noise Align alpha</option>
+              <option value="dim">Dimensionality</option>
+              <option value="gain">Attn Gain</option>
+              <option value="mux">Mux Load</option>
+              <option value="rho">Global rho</option>
+              <option value="diffcorr">Diff Corr</option>
+            </select>
+          </div>
+          <div class="sel-row"><span class="sel-lbl">Z:</span>
+            <select id="hm-z">
+              <option value="K" selected>K - Coherent Info Fraction</option>
+              <option value="FI">Fisher Information</option>
+              <option value="MI">Raw MI</option>
+              <option value="bcMI">Bias-corrected MI</option>
+              <option value="CC">Channel Capacity</option>
+              <option value="PR">Participation Ratio</option>
+              <option value="navFrac">Navigable Fraction</option>
+              <option value="acc">Decode Accuracy</option>
+              <option value="dci">Diff Corr Index</option>
+            </select>
+          </div>
+          <div class="sl"><div class="sl-row"><span class="sl-name">Resolution</span><span class="sl-val" id="vres">15</span></div><input type="range" id="sres" min="5" max="25" step="1" value="15"></div>
+          <div class="btn-row"><button class="btn gold" onclick="runSweep()">RUN SWEEP</button></div>
+          <div id="sweep-progress" style="display:none;margin-top:6px">
+            <div style="font-size:9px;color:var(--dim);margin-bottom:3px" id="sweep-status">Computing...</div>
+            <div style="height:3px;background:var(--bg3);border-radius:2px"><div id="sweep-bar" style="height:100%;width:0%;background:var(--gold);transition:width .1s;border-radius:2px"></div></div>
+            <button class="btn danger" style="margin-top:4px;flex:none;width:100%" onclick="stopSweep()">INTERRUPT</button>
+          </div>
+          <div class="sec" style="margin-top:10px">Metric Crossplot</div>
+          <div class="sel-row"><span class="sel-lbl">A:</span>
+            <select id="cross-a"><option value="FI" selected>Fisher Info</option><option value="MI">Raw MI</option><option value="K">K</option><option value="CC">Channel Cap</option><option value="PR">Partic Ratio</option><option value="acc">Accuracy</option></select>
+          </div>
+          <div class="sel-row"><span class="sel-lbl">B:</span>
+            <select id="cross-b"><option value="MI">Raw MI</option><option value="FI">Fisher Info</option><option value="K" selected>K</option><option value="CC">Channel Cap</option><option value="PR">Partic Ratio</option><option value="acc">Accuracy</option></select>
+          </div>
+          <div class="sec" style="margin-top:10px">Export</div>
+          <div class="btn-row">
+            <button class="btn" onclick="exportJSON()">JSON</button>
+            <button class="btn" onclick="exportCSV()">CSV</button>
+            <button class="btn" onclick="exportParquet()">Parquet</button>
+          </div>
+          <div class="btn-row">
+            <button class="btn purple" onclick="exportPython()">Python stub</button>
+            <button class="btn danger"  onclick="clearLog()">CLR LOG</button>
+          </div>
+          <div class="sec" style="margin-top:10px">Validation 2.5</div>
+          <table style="width:100%;font-size:9px;border-collapse:collapse;color:var(--dim);line-height:1.9">
+            <tr><td></td><td style="color:var(--a2)">Sys A (a=0)</td><td style="color:var(--gold)">Sys B (a=1)</td></tr>
+            <tr><td>K</td><td style="color:var(--a2)">1.000</td><td style="color:var(--gold)">0.370</td></tr>
+            <tr><td>acc</td><td style="color:var(--a2)">97.1%</td><td style="color:var(--gold)">78.0%</td></tr>
+          </table>
+          <div class="btn-row" style="margin-top:5px">
+            <button class="btn green" onclick="validateSysA()">Sys A</button>
+            <button class="btn gold"  onclick="validateSysB()">Sys B</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div id="main">
+      <div id="metrics-rail">
+        <div class="mc tip" id="c-K"    data-tip="K = I_nav / H_max(sig2_task) — Stabler 2026"><div class="ml">K Coherent Info</div><div class="mv gold" id="mv-K">-</div><div class="mci" id="ci-K"></div><div class="k-bar"><div class="k-bar-fill" id="kfill" style="width:0%"></div></div></div>
+        <div class="mc tip" id="c-MI"   data-tip="Raw MI = 0.5*log2(1+SNR) — Panzeri and Treves 1996"><div class="ml">Raw MI</div><div class="mv" id="mv-MI">-</div><div class="mci" id="ci-MI"></div><div class="mu">bits</div></div>
+        <div class="mc tip" id="c-bcMI" data-tip="Bias-corrected MI — quadratic extrapolation Panzeri 2007"><div class="ml">BC-MI</div><div class="mv" id="mv-bcMI">-</div><div class="mu">bits</div></div>
+        <div class="mc tip" id="c-nMI"  data-tip="Nav MI = navFrac x Raw MI — Stabler 2026 2.2"><div class="ml">Navigable MI</div><div class="mv green" id="mv-nMI">-</div><div class="mu">bits</div></div>
+        <div class="mc tip" id="c-FI"   data-tip="J = f' Sigma-1 f' — correlated Cramer-Rao Seung 1993"><div class="ml">Fisher Info</div><div class="mv" id="mv-FI">-</div><div class="mci" id="ci-FI"></div></div>
+        <div class="mc tip" id="c-CC"   data-tip="CC = 0.5*log2(1+J/d) — Shannon channel capacity"><div class="ml">Channel Cap</div><div class="mv" id="mv-CC">-</div><div class="mu">bits</div></div>
+        <div class="mc tip" id="c-PR"   data-tip="PR = (sum_lambda)^2 / sum_lambda^2 — Gao and Ganguli 2017"><div class="ml">Partic Ratio</div><div class="mv" id="mv-PR">-</div><div class="mci" id="ci-PR"></div></div>
+        <div class="mc tip" id="c-navF" data-tip="P(conf > 95th pctile permutation null) — 2.2"><div class="ml">Nav Fraction</div><div class="mv" id="mv-navF">-</div></div>
+        <div class="mc tip" id="c-acc"  data-tip="Decode accuracy — normCDF(d') calibrated 2.5"><div class="ml">Accuracy</div><div class="mv green" id="mv-acc">-</div><div class="mci" id="ci-acc"></div><div class="mu">%</div></div>
+        <div class="mc tip" id="c-dci"  data-tip="Noise projection onto signal manifold — Moreno-Bote 2014"><div class="ml">Diff Corr Idx</div><div class="mv" id="mv-dci">-</div></div>
+        <div class="mc tip" id="c-ceil" data-tip="Upper bound noiseless decoder — Nili 2014"><div class="ml">Noise Ceiling</div><div class="mv" id="mv-ceil">-</div><div class="mu">%</div></div>
+      </div>
+
+      <div id="diag-bar">
+        <div class="diag-item"><span>!</span><span id="diag-indep">Correlation entropy check</span></div>
+        <div class="diag-item" id="diag-infolimit" style="display:none"><span>X</span><span>Info-limiting regime — FI overestimates (Moreno-Bote 2014)</span></div>
+        <div class="diag-item" id="diag-singular"  style="display:none"><span>*</span><span>Sigma regularized (epsilon I added)</span></div>
+      </div>
+
+      <div id="state-bar">
+        <div class="si"><span class="sl2">sig2_TASK:</span><span class="sv" id="sv-st">-</span></div>
+        <div class="si"><span class="sl2">H_MAX:</span><span class="sv" id="sv-hm">-</span><span class="sl2">b</span></div>
+        <div class="si"><span class="sl2">SNR:</span><span class="sv" id="sv-snr">-</span></div>
+        <div class="si"><span class="sl2">H_CORR:</span><span class="sv" id="sv-hcorr">-</span></div>
+        <div class="si"><span class="sl2">REGIME:</span><span class="regime" id="sv-reg">-</span></div>
+        <div class="sp"></div>
+        <div class="pref">Stabler 2026 &nbsp;·&nbsp; <a href="https://github.com/RandolphPelican/population-code-lab" target="_blank">population-code-lab</a></div>
+      </div>
+
+      <div id="charts">
+        <div class="cp">
+          <div class="ch"><span>Primary</span><select class="chart-sel" id="sel-primary" onchange="setPrimaryChart(this.value)"><option value="bar">Metric Bar Chart</option><option value="tuning">Tuning Curves</option><option value="scatter">Population Scatter</option><option value="covariance">Covariance Matrix</option><option value="ellipse">Noise Ellipse</option><option value="epoch">Epoch Timecourse</option></select><span class="badge">live</span></div>
+          <div class="cw"><canvas id="primary-c"></canvas></div>
+        </div>
+        <div class="cp">
+          <div class="ch"><span>Secondary</span><select class="chart-sel" id="sel-secondary" onchange="setSecondaryChart(this.value)"><option value="sweep">Alignment Sweep</option><option value="eigenspectrum">Eigenspectrum</option><option value="rdm">RDM</option><option value="mds">MDS</option><option value="scaling">N-Scaling log-log</option><option value="crossplot">Metric Crossplot</option><option value="boundary">Decode Boundary</option></select><span class="badge">live</span></div>
+          <div class="cw"><canvas id="secondary-c"></canvas></div>
+        </div>
+        <div class="cp">
+          <div class="ch" id="hm-head">Heatmap — configure in Sweep tab<span class="badge" id="hm-badge">idle</span></div>
+          <div class="cw"><canvas id="hm-c"></canvas></div>
+        </div>
+        <div class="cp">
+          <div class="ch">Run Log<span class="badge" id="log-count">0 runs</span></div>
+          <div id="log-scroll"></div>
+        </div>
+      </div>
+
+      <div id="compare-panel">
+        <table id="compare-table">
+          <thead><tr id="compare-head"></tr></thead>
+          <tbody id="compare-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="status-bar">
+  <div class="sbi">sig2_task: <span id="sb-st">-</span></div>
+  <div class="sbi">H_max: <span id="sb-hm">-</span>b</div>
+  <div class="sbi">SNR: <span id="sb-snr">-</span></div>
+  <div class="sbi">navFrac: <span id="sb-nf">-</span></div>
+  <div class="sbi">K: <span id="sb-k">-</span></div>
+  <div class="sbi right">K = I_nav / H_max(sig2_task) &nbsp;·&nbsp; Randolph Pelican III</div>
+</div>
+
+<script>
+"use strict";
+const iC=document.getElementById('intro-canvas'),iX=iC.getContext('2d');
+let introOn=true;
+function riC(){iC.width=innerWidth;iC.height=innerHeight}
+riC();addEventListener('resize',riC);
+const ptcls=Array.from({length:100},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,vx:(Math.random()-.5)*.3,vy:-Math.random()*.7-.15,r:Math.random()*2+.5,life:Math.random(),col:Math.random()<.55?'#ffcc33':'#7cf2c6'}));
+const lights=[{a:-.25,da:.003,bx:.2},{a:.4,da:-.002,bx:.5},{a:.1,da:.0035,bx:.8}];
+let iT=0;
+function drawIntro(){
+  if(!introOn)return;iT++;
+  const W=iC.width,H=iC.height;
+  iX.fillStyle='rgba(0,0,0,0.22)';iX.fillRect(0,0,W,H);
+  lights.forEach(l=>{l.a+=l.da;const bx=l.bx*W,sp=.04;const g=iX.createLinearGradient(bx,H,bx+Math.sin(l.a)*H*1.3,0);g.addColorStop(0,'rgba(255,204,51,0)');g.addColorStop(.4,'rgba(255,204,51,.07)');g.addColorStop(1,'rgba(255,204,51,0)');iX.save();iX.beginPath();iX.moveTo(bx,H);iX.lineTo(bx+Math.sin(l.a-sp)*H*1.6,0);iX.lineTo(bx+Math.sin(l.a+sp)*H*1.6,0);iX.closePath();iX.fillStyle=g;iX.fill();iX.restore();});
+  ptcls.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.life-=.004;if(p.life<=0||p.y<0){p.x=Math.random()*W;p.y=H+5;p.vx=(Math.random()-.5)*.3;p.vy=-Math.random()*.7-.15;p.life=.7+Math.random()*.3}iX.globalAlpha=p.life*.75;iX.fillStyle=p.col;iX.beginPath();iX.arc(p.x,p.y,p.r,0,Math.PI*2);iX.fill();});
+  iX.globalAlpha=1;
+  const pulse=.5+.5*Math.sin(iT*.04);const g2=iX.createRadialGradient(W/2,H/2,0,W/2,H/2,220+pulse*40);g2.addColorStop(0,`rgba(0,209,255,${.05*pulse})`);g2.addColorStop(1,'transparent');iX.fillStyle=g2;iX.fillRect(0,0,W,H);
+  requestAnimationFrame(drawIntro);
+}
+drawIntro();
+setTimeout(skipIntro,5000);
+function skipIntro(){
+  if(!introOn)return;introOn=false;
+  const el=document.getElementById('intro');
+  el.style.transition='opacity .8s ease';el.style.opacity='0';
+  setTimeout(()=>{el.style.display='none';document.getElementById('app').classList.add('visible');if(typeof compute==='function')compute();},800);
+}
+function switchTab(name){
+  document.querySelectorAll('.stab').forEach(t=>t.classList.toggle('active',t.dataset.tab===name));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active',p.id==='tab-'+name));
+}
+document.getElementById('cbnonstat').addEventListener('change',function(){document.getElementById('nonstat-controls').style.display=this.checked?'block':'none';});
+function setPrimaryChart(v){console.log('primary:',v)}
+function setSecondaryChart(v){console.log('secondary:',v)}
+function compute(){}
+function runSweep(){}
+function stopSweep(){}
+function exportJSON(){}
+function exportCSV(){}
+function exportParquet(){}
+function exportPython(){}
+function clearLog(){document.getElementById('log-scroll').innerHTML='';document.getElementById('log-count').textContent='0 runs';}
+function saveScenario(){}
+function loadScenario(){}
+function loadPreset(){}
+function shareURL(){}
+function applyPreset(p){console.log('preset:',p)}
+function applyDriftTemplate(t){console.log('drift:',t)}
+function validateSysA(){}
+function validateSysB(){}
+</script>
+</body>
+</html>
