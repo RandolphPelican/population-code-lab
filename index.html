@@ -341,6 +341,7 @@ select:focus{border-color:var(--accent)}
     <div style="display:flex;gap:8px">
       <div class="pill" style="color:var(--gold);border-color:rgba(255,204,51,.3)" onclick="runGridSim()">&#x25B6; RUN</div>
       <div class="pill" style="color:var(--red);border-color:rgba(255,68,85,.3)" onclick="stopGridSim()">&#x25A0; STOP</div>
+      <div class="pill" id="chain-pill" style="color:var(--a2);border-color:rgba(124,242,198,.3)" onclick="toggleChain()">&#x2B21; CHAIN</div>
       <div class="pill" style="color:var(--dim);border-color:var(--border)" onclick="toggleGridMode()">&#x2715; CLOSE</div>
     </div>
   </div>
@@ -373,6 +374,7 @@ select:focus{border-color:var(--accent)}
       <div class="cp"><div class="ch"><span>Trajectory + Phase</span></div><div class="cw"><canvas id="grid-traj-c"></canvas></div></div>
     </div>
   </div>
+<div id="chain-overlay" style="display:none;position:fixed;inset:0;z-index:8500;background:var(--bg0);flex-direction:column;overflow:hidden"><div style="display:flex;align-items:center;justify-content:space-between;padding:8px 16px;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0"><div style="font-family:Syne,sans-serif;font-size:14px;font-weight:800;color:var(--a2)">#x2B21; GRID to PLACE CHAIN</div><div style="display:flex;gap:8px"><div class="pill" style="color:var(--gold);border-color:rgba(255,204,51,.3)" onclick="runChainSim()">#x25B6; RUN CHAIN</div><div class="pill" style="color:var(--dim);border-color:var(--border)" onclick="toggleChain()">#x2715; CLOSE</div></div></div><div style="display:flex;flex:1;overflow:hidden;min-height:0"><div style="width:240px;min-width:240px;background:var(--panel);border-right:1px solid var(--border);overflow-y:auto;padding:10px 12px 60px"><div class="sec">Place Cell Params</div><div class="sl"><div class="sl-row"><span class="sl-name">Place Cells</span><span class="sl-val" id="cv-nplace">50</span></div><input type="range" id="cs-nplace" min="10" max="200" step="10" value="50" oninput="CP.nplace=+this.value;document.getElementById('cv-nplace').textContent=this.value"></div><div class="sl"><div class="sl-row"><span class="sl-name">Env Size cm</span><span class="sl-val" id="cv-envsize">100</span></div><input type="range" id="cs-envsize" min="20" max="300" step="10" value="100" oninput="CP.envsize=+this.value;document.getElementById('cv-envsize').textContent=this.value"></div><div class="sl"><div class="sl-row"><span class="sl-name">Grid Modules</span><span class="sl-val" id="cv-fmodules">3</span></div><input type="range" id="cs-fmodules" min="1" max="6" step="1" value="3" oninput="CP.fmodules=+this.value;document.getElementById('cv-fmodules').textContent=this.value"></div><div class="sl"><div class="sl-row"><span class="sl-name">Base Spacing cm</span><span class="sl-val" id="cv-spacing">30</span></div><input type="range" id="cs-spacing" min="10" max="80" step="5" value="30" oninput="CP.spacing=+this.value;document.getElementById('cv-spacing').textContent=this.value"></div><div class="sl"><div class="sl-row"><span class="sl-name">Place Noise</span><span class="sl-val" id="cv-pnoise">0.10</span></div><input type="range" id="cs-pnoise" min="0" max="0.5" step="0.01" value="0.1" oninput="CP.pnoise=+this.value;document.getElementById('cv-pnoise').textContent=(+this.value).toFixed(2)"></div><div class="sl"><div class="sl-row"><span class="sl-name">Remapping Prob</span><span class="sl-val" id="cv-premap">0.00</span></div><input type="range" id="cs-premap" min="0" max="1" step="0.05" value="0" oninput="CP.premap=+this.value;document.getElementById('cv-premap').textContent=(+this.value).toFixed(2)"></div><div class="sec">Chain Metrics</div><div style="font-size:9px;line-height:2.1;color:var(--dim)">Grid K: <span id="cm-gridk" style="color:var(--purple)">-</span><br>Place K: <span id="cm-placek" style="color:var(--a2)">-</span><br>K gain: <span id="cm-kgain" style="color:var(--gold)">-</span><br>Active cells: <span id="cm-active" style="color:var(--a2)">-</span><br>Capacity bits: <span id="cm-cap" style="color:var(--accent)">-</span><br>Remapping: <span id="cm-remap" style="color:var(--red)">-</span></div></div><div style="flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:1px;background:var(--bg0)"><div class="cp"><div class="ch"><span>Grid Inputs</span><span class="badge" id="chain-badge">idle</span></div><div class="cw"><canvas id="chain-grid-c"></canvas></div></div><div class="cp"><div class="ch"><span>Place Field Map 2D</span></div><div class="cw"><canvas id="chain-place-c"></canvas></div></div><div class="cp"><div class="ch"><span>Place Population Activity</span></div><div class="cw"><canvas id="chain-pop-c"></canvas></div></div><div class="cp"><div class="ch"><span>K Grid vs Place</span></div><div class="cw"><canvas id="chain-k-c"></canvas></div></div></div></div></div>
 </div>
 <div id="status-bar">
   <div class="sbi">s2task: <span id="sb-st">-</span></div>
@@ -984,6 +986,173 @@ function computeGridMetrics(){
   document.getElementById('gm-spacing').textContent=spacing;
   document.getElementById('gm-orient').textContent=(0).toFixed(1);
   document.getElementById('gm-modules').textContent=M;
+}
+
+// ── Module 5: Grid → Place Chain Fusion ──────────────────────────────────────
+const CP={nplace:50,envsize:100,fmodules:3,spacing:30,pnoise:0.1,premap:0.0};
+let chainData=null;
+
+function toggleChain(){
+  const ov=document.getElementById('chain-overlay');
+  const vis=ov.style.display==='flex';
+  ov.style.display=vis?'none':'flex';
+  document.getElementById('chain-pill').style.background=vis?'':'rgba(124,242,198,.1)';
+}
+
+function runChainSim(){
+  document.getElementById('chain-badge').textContent='running';
+  const{nplace,envsize,fmodules,spacing,pnoise,premap}=CP;
+  const res=40;// 2D environment grid resolution
+  // Grid module scales — ratio sqrt(2) between modules (Stensola 2012)
+  const scales=Array.from({length:fmodules},(_,m)=>spacing*Math.pow(Math.sqrt(2),m));
+  // Random phases and orientations per module
+  const phases=Array.from({length:fmodules},()=>({px:Math.random()*spacing,py:Math.random()*spacing,orient:Math.random()*Math.PI/3}));
+  // Compute grid response at each 2D location — interference model (Solstad 2006)
+  function gridResponse(x,y,moduleIdx){
+    const lam=scales[moduleIdx],ph=phases[moduleIdx];
+    const th=ph.orient;
+    // Three wave vectors at 60 degree offsets
+    let r=0;
+    for(let k=0;k<3;k++){
+      const ang=th+k*Math.PI/3;
+      r+=Math.cos(2*Math.PI*(Math.cos(ang)*(x-ph.px)+Math.sin(ang)*(y-ph.py))/lam);
+    }
+    return Math.max(0,(r/3+1)/2);
+  }
+  // Random place cell preferred locations
+  const placePrefs=Array.from({length:nplace},()=>({px:Math.random()*envsize,py:Math.random()*envsize,remapped:Math.random()<premap}));
+  // Compute place cell responses across 2D environment
+  const placeMap=Array.from({length:res},(_,yi)=>Array.from({length:res},(_,xi)=>{
+    const x=xi/res*envsize,y=yi/res*envsize;
+    return placePrefs.map((pc,i)=>{
+      if(pc.remapped){// remapped cell — decorrelated from grid
+        const dx=x-pc.px,dy=y-pc.py;
+        return Math.exp(-(dx*dx+dy*dy)/(2*15*15));
+      }
+      // Product of grid inputs (interference model)
+      let r=1;
+      for(let m=0;m<fmodules;m++)r*=gridResponse(x-pc.px,y-pc.py,m);
+      r=Math.max(0,r+pnoise*(Math.random()-.5));
+      // Threshold for sparseness
+      return r>0.3?r:0;
+    });
+  }));
+  // Population activity vector at center of environment
+  const cx=envsize/2,cy=envsize/2;
+  const popActivity=placePrefs.map((pc,i)=>{
+    if(pc.remapped){const dx=cx-pc.px,dy=cy-pc.py;return Math.exp(-(dx*dx+dy*dy)/(2*15*15));}
+    let r=1;for(let m=0;m<fmodules;m++)r*=gridResponse(cx-pc.px,cy-pc.py,m);
+    return Math.max(0,r+pnoise*(Math.random()-.5));
+  });
+  const activeCount=popActivity.filter(v=>v>0.1).length;
+  // Compute K for grid population
+  const gridKp={...P,n:100*fmodules,sig:2.5,noise:0.3,align:0.1,dim:2,gain:1,mux:1,thresh:1,rho:0.02,diffcorr:0.05,fano:1,sparse:0.7,trials:500,boot:50,nonstat:false};
+  const gridKm=computeMetrics(gridKp);
+  // Compute K for place population
+  const placeKp={...P,n:nplace,sig:3.0,noise:pnoise*10+0.2,align:0.05+premap*0.4,dim:2,gain:1,mux:1,thresh:1,rho:0.01,diffcorr:0.02,fano:1,sparse:activeCount/nplace,trials:500,boot:50,nonstat:false};
+  const placeKm=computeMetrics(placeKp);
+  const Kgain=placeKm.K/Math.max(gridKm.K,0.001);
+  const capacity=Math.log2(Math.max(nplace,1))*placeKm.navFrac;
+  chainData={placeMap,popActivity,placePrefs,scales,phases,gridKm,placeKm,Kgain,activeCount,capacity,res,envsize,fmodules,remapCount:placePrefs.filter(p=>p.remapped).length};
+  document.getElementById('chain-badge').textContent='done';
+  document.getElementById('cm-gridk').textContent=gridKm.K.toFixed(3);
+  document.getElementById('cm-placek').textContent=placeKm.K.toFixed(3);
+  document.getElementById('cm-kgain').textContent=Kgain.toFixed(3)+(Kgain>=1?' ↑':' ↓');
+  document.getElementById('cm-active').textContent=activeCount+'/'+nplace;
+  document.getElementById('cm-cap').textContent=capacity.toFixed(2);
+  document.getElementById('cm-remap').textContent=chainData.remapCount>0?chainData.remapCount+' cells':'none';
+  drawChainGridInputs();drawChainPlaceMap();drawChainPop();drawChainK();
+}
+
+function drawChainGridInputs(){
+  const{x,W,H}=getCanvas('chain-grid-c');clr(x,W,H);
+  if(!chainData)return;
+  const{scales,phases,fmodules,envsize,res}=chainData;
+  lbl(x,'GRID MODULE PHASES (interference)',10,14,'#7cf2c6',8);
+  const modW=Math.floor((W-20)/fmodules);
+  for(let m=0;m<fmodules;m++){
+    const ox=10+m*modW;
+    for(let yi=0;yi<20;yi++)for(let xi=0;xi<20;xi++){
+      const gx=xi/20*envsize,gy=yi/20*envsize;
+      const lam=scales[m],ph=phases[m],th=ph.orient;
+      let r=0;for(let k=0;k<3;k++){const ang=th+k*Math.PI/3;r+=Math.cos(2*Math.PI*(Math.cos(ang)*(gx-ph.px)+Math.sin(ang)*(gy-ph.py))/lam);}
+      const t=Math.max(0,Math.min(1,(r/3+1)/2));
+      const cw2=Math.floor(modW/20),ch2=Math.floor((H-30)/20);
+      x.fillStyle=`rgb(${Math.round(t*124)},${Math.round(t*242)},${Math.round(t*198)})`;
+      x.fillRect(ox+xi*cw2,20+yi*ch2,cw2,ch2);
+    }
+    lbl(x,`M${m+1} λ=${scales[m].toFixed(0)}cm`,ox,H-3,'#5a8aaa',7);
+  }
+}
+
+function drawChainPlaceMap(){
+  const{x,W,H}=getCanvas('chain-place-c');clr(x,W,H);
+  if(!chainData)return;
+  const{placeMap,res,placePrefs,remapCount}=chainData;
+  lbl(x,'PLACE FIELD MAP (2D environment)',10,14,'#7cf2c6',8);
+  const cw=Math.floor((W-20)/res),ch=Math.floor((H-24)/res);
+  // Sum all place cell responses
+  for(let yi=0;yi<res;yi++)for(let xi=0;xi<res;xi++){
+    const total=placeMap[yi][xi].reduce((a,b)=>a+b,0)/CP.nplace;
+    const t=Math.min(1,total*3);
+    x.fillStyle=`rgb(${Math.round(t*0)},${Math.round(t*180+50)},${Math.round(t*120+30)})`;
+    x.fillRect(10+xi*cw,20+yi*ch,cw,ch);
+  }
+  // Plot place cell centers
+  placePrefs.forEach(pc=>{
+    const px=10+(pc.px/CP.envsize)*(W-20);
+    const py=20+(pc.py/CP.envsize)*(H-24);
+    x.beginPath();x.arc(px,py,2,0,Math.PI*2);
+    x.fillStyle=pc.remapped?'#ff4455':'#ffcc3388';x.fill();
+  });
+  if(remapCount>0)lbl(x,`${remapCount} remapped (red)`,10,H-3,'#ff4455',7);
+}
+
+function drawChainPop(){
+  const{x,W,H}=getCanvas('chain-pop-c');clr(x,W,H);
+  if(!chainData)return;
+  const{popActivity}=chainData;
+  lbl(x,'PLACE POPULATION @ ENV CENTER',10,14,'#7cf2c6',8);
+  const pad=24,n=popActivity.length,bw=Math.max(1,Math.floor((W-pad-10)/n)-1);
+  const maxV=Math.max(...popActivity)||1;
+  popActivity.forEach((v,i)=>{
+    const bh=(H-pad-20)*v/maxV;
+    x.fillStyle=v>0.1?'#7cf2c6':'#0d2035';
+    x.fillRect(pad+i*(bw+1),H-pad-bh,bw,bh);
+  });
+  lbl(x,`active=${chainData.activeCount}/${chainData.placePrefs.length}  K=${chainData.placeKm.K.toFixed(3)}`,pad,H-3,'#5a8aaa',7);
+}
+
+function drawChainK(){
+  const{x,W,H}=getCanvas('chain-k-c');clr(x,W,H);
+  lbl(x,'K: GRID vs PLACE — capacity scaling',10,14,'#7cf2c6',8);
+  const pad=30,steps=12;
+  // Sweep number of grid modules 1..6, show K grid and K place
+  const modCounts=Array.from({length:steps},(_,i)=>Math.round(1+i*5/11));
+  const uniqueMods=[...new Set(modCounts)];
+  const gridKs=[],placeKs=[];
+  uniqueMods.forEach(m=>{
+    const gp={...P,n:100*m,sig:2.5,noise:0.3,align:0.1,dim:2,gain:1,mux:1,thresh:1,rho:0.02,diffcorr:0.05,fano:1,sparse:0.7,trials:500,boot:50,nonstat:false};
+    gridKs.push(computeMetrics(gp).K);
+    const pp={...P,n:CP.nplace,sig:3.0,noise:CP.pnoise*10+0.2,align:0.05,dim:2,gain:1,mux:1,thresh:1,rho:0.01,diffcorr:0.02,fano:1,sparse:0.5,trials:500,boot:50,nonstat:false};
+    placeKs.push(computeMetrics(pp).K);
+  });
+  [{vals:gridKs,col:'#a855f7',lbl:'Grid K'},{vals:placeKs,col:'#7cf2c6',lbl:'Place K'}].forEach(mt=>{
+    x.beginPath();x.strokeStyle=mt.col;x.lineWidth=2;
+    mt.vals.forEach((v,i)=>{const px=pad+(W-pad-10)*i/(uniqueMods.length-1||1);const py=(H-pad-20)*(1-Math.max(0,Math.min(1,v)))+20;i===0?x.moveTo(px,py):x.lineTo(px,py);});
+    x.stroke();
+    const last=mt.vals[mt.vals.length-1];
+    lbl(x,mt.lbl,W-50,(H-pad-20)*(1-Math.max(0,Math.min(1,last)))+20,mt.col,7);
+  });
+  if(chainData){
+    x.beginPath();x.strokeStyle='#ffcc3355';x.setLineDash([3,3]);x.lineWidth=1;
+    const py=(H-pad-20)*(1-Math.max(0,Math.min(1,chainData.Kgain)))+20;
+    x.moveTo(pad,py);x.lineTo(W-10,py);x.stroke();x.setLineDash([]);
+    lbl(x,`gain=${chainData.Kgain.toFixed(2)}`,pad,py-3,'#ffcc33',7);
+  }
+  lbl(x,'grid modules',W/2,H-3,'#5a8aaa',7);
+  // Axis labels
+  for(let i=0;i<uniqueMods.length;i++){lbl(x,uniqueMods[i],pad+(W-pad-10)*i/(uniqueMods.length-1||1)-3,H-pad+8,'#5a8aaa',7);}
 }
 
 loadFromURL();
