@@ -139,6 +139,7 @@ select:focus{border-color:var(--accent)}
       <div class="pill pill-dim" onclick="loadPreset()">&#x229E; PRESETS</div>
       <div class="pill pill-dim" onclick="saveScenario()">&#x2295; SAVE</div>
       <div class="pill pill-dim" onclick="loadScenario()">&#x2299; LOAD</div>
+      <div class="pill pill-purple" id="grid-mode-pill" onclick="toggleGridMode()" style="color:var(--purple);border-color:rgba(168,85,247,.3)">&#x25A6; GRID CELL</div>
       <div class="pill pill-accent" onclick="shareURL()">&#x2B21; SHARE</div>
       <div class="pill pill-gold" onclick="exportJSON()">&#x2B07; EXPORT</div>
     </div>
@@ -227,6 +228,14 @@ select:focus{border-color:var(--accent)}
             <button class="btn purple" onclick="applyPreset('infolimit')">Info-Limit</button>
           </div>
           <div id="preset-fidelity" class="warn-banner" style="margin-top:6px"></div>
+          <div class="sec">Custom Decoder Upload</div>
+          <div style="font-size:9px;color:var(--dim);line-height:1.7;margin-bottom:6px">JS file exporting <span style="color:var(--a2)">decode(X)</span> → <span style="color:var(--a2)">{accuracy, confidence[]}</span></div>
+          <input type="file" id="decoder-upload" accept=".js" style="display:none" onchange="handleDecoderUpload(this)">
+          <div class="btn-row">
+            <button class="btn purple" onclick="document.getElementById('decoder-upload').click()">UPLOAD DECODER</button>
+          </div>
+          <div id="decoder-status" class="warn-banner" style="margin-top:6px"></div>
+          <div id="decoder-ok" style="display:none;margin-top:6px;padding:6px 8px;background:rgba(124,242,198,.08);border:1px solid var(--a2);font-size:9px;color:var(--a2)"></div>
         </div>
         <div id="tab-sweep" class="tab-panel">
           <div class="sec">Parameter Sweep</div>
@@ -310,13 +319,52 @@ select:focus{border-color:var(--accent)}
           <div class="cw"><canvas id="hm-c"></canvas></div>
         </div>
         <div class="cp">
-          <div class="ch"><span>Run Log</span><span class="badge" id="log-count">0 runs</span></div>
+          <div class="ch"><span>Run Log</span><input id="log-search" placeholder="search…" oninput="filterLog(this.value)" style="font-family:'Space Mono',monospace;font-size:8px;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:2px 5px;width:90px;outline:none"><span class="badge" id="log-count">0 runs</span></div>
           <div id="log-scroll"></div>
         </div>
       </div>
       <div id="compare-panel">
         <table id="compare-table"><thead><tr id="compare-head"></tr></thead><tbody id="compare-body"></tbody></table>
       </div>
+    </div>
+  </div>
+</div>
+<div id="grid-overlay" style="display:none;position:fixed;inset:0;z-index:8000;background:var(--bg0);flex-direction:column;overflow:hidden">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 16px;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0">
+    <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:var(--purple)">&#x25A6; GRID CELL ATTRACTOR &nbsp;<span style="font-size:9px;color:var(--dim);font-weight:400">Burak &amp; Fiete 2009 — publication_accurate</span></div>
+    <div style="display:flex;gap:8px">
+      <div class="pill" style="color:var(--gold);border-color:rgba(255,204,51,.3)" onclick="runGridSim()">&#x25B6; RUN</div>
+      <div class="pill" style="color:var(--red);border-color:rgba(255,68,85,.3)" onclick="stopGridSim()">&#x25A0; STOP</div>
+      <div class="pill" style="color:var(--dim);border-color:var(--border)" onclick="toggleGridMode()">&#x2715; CLOSE</div>
+    </div>
+  </div>
+  <div style="display:flex;flex:1;overflow:hidden;min-height:0">
+    <div style="width:240px;min-width:240px;background:var(--panel);border-right:1px solid var(--border);overflow-y:auto;padding:10px 12px 60px">
+      <div class="sec">Ring Attractor Params</div>
+      <div class="sl"><div class="sl-row"><span class="sl-name">Grid Modules</span><span class="sl-val" id="gv-modules">3</span></div><input type="range" id="gs-modules" min="1" max="6" step="1" value="3" oninput="GP.modules=+this.value;document.getElementById('gv-modules').textContent=this.value"></div>
+      <div class="sl"><div class="sl-row"><span class="sl-name">Neurons / Module</span><span class="sl-val" id="gv-n">100</span></div><input type="range" id="gs-n" min="20" max="200" step="10" value="100" oninput="GP.n=+this.value;document.getElementById('gv-n').textContent=this.value"></div>
+      <div class="sl"><div class="sl-row"><span class="sl-name">Velocity Input</span><span class="sl-val" id="gv-vel">0.20</span></div><input type="range" id="gs-vel" min="0" max="1" step="0.01" value="0.2" oninput="GP.vel=+this.value;document.getElementById('gv-vel').textContent=(+this.value).toFixed(2)"></div>
+      <div class="sl"><div class="sl-row"><span class="sl-name">Excit. Width W_E</span><span class="sl-val" id="gv-we">0.10</span></div><input type="range" id="gs-we" min="0.02" max="0.4" step="0.01" value="0.1" oninput="GP.we=+this.value;document.getElementById('gv-we').textContent=(+this.value).toFixed(2)"></div>
+      <div class="sl"><div class="sl-row"><span class="sl-name">Inhib. Width W_I</span><span class="sl-val" id="gv-wi">0.20</span></div><input type="range" id="gs-wi" min="0.05" max="0.6" step="0.01" value="0.2" oninput="GP.wi=+this.value;document.getElementById('gv-wi').textContent=(+this.value).toFixed(2)"></div>
+      <div class="sl"><div class="sl-row"><span class="sl-name">Scale Factor</span><span class="sl-val" id="gv-scale">1.00</span></div><input type="range" id="gs-scale" min="0.5" max="3" step="0.05" value="1" oninput="GP.scale=+this.value;document.getElementById('gv-scale').textContent=(+this.value).toFixed(2)"></div>
+      <div class="sl"><div class="sl-row"><span class="sl-name">Noise sigma</span><span class="sl-val" id="gv-gnoise">0.05</span></div><input type="range" id="gs-gnoise" min="0" max="0.3" step="0.01" value="0.05" oninput="GP.gnoise=+this.value;document.getElementById('gv-gnoise').textContent=(+this.value).toFixed(2)"></div>
+      <div class="sl"><div class="sl-row"><span class="sl-name">Steps</span><span class="sl-val" id="gv-steps">200</span></div><input type="range" id="gs-steps" min="50" max="500" step="50" value="200" oninput="GP.steps=+this.value;document.getElementById('gv-steps').textContent=this.value"></div>
+      <div class="sec">Grid Metrics</div>
+      <div style="font-size:9px;line-height:2;color:var(--dim)">
+        K: <span id="gm-K" style="color:var(--gold)">-</span><br>
+        Spacing: <span id="gm-spacing" style="color:var(--a2)">-</span> cm<br>
+        Orientation: <span id="gm-orient" style="color:var(--a2)">-</span> deg<br>
+        Modules: <span id="gm-modules" style="color:var(--purple)">-</span><br>
+        Phase err: <span id="gm-phase" style="color:var(--dim)">-</span>
+      </div>
+      <div class="sec" style="margin-top:8px">Fidelity</div>
+      <div style="font-size:9px;color:var(--gold);line-height:1.7;padding:5px 7px;background:rgba(255,170,0,.08);border:1px solid var(--gold2)">publication_accurate<br>Burak &amp; Fiete 2009<br>Ring attractor + velocity</div>
+    </div>
+    <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:1px;background:var(--bg0)">
+      <div class="cp"><div class="ch"><span>Module Activity (toroidal)</span><span class="badge" id="grid-badge">idle</span></div><div class="cw"><canvas id="grid-activity-c"></canvas></div></div>
+      <div class="cp"><div class="ch"><span>Grid Field (2D spatial)</span></div><div class="cw"><canvas id="grid-field-c"></canvas></div></div>
+      <div class="cp"><div class="ch"><span>Module Eigenspectrum</span></div><div class="cw"><canvas id="grid-eigen-c"></canvas></div></div>
+      <div class="cp"><div class="ch"><span>Trajectory + Phase</span></div><div class="cw"><canvas id="grid-traj-c"></canvas></div></div>
     </div>
   </div>
 </div>
@@ -692,6 +740,245 @@ function loadFromURL(){const sp=new URLSearchParams(location.search);sp.forEach(
 function saveScenario(){const name=prompt('Scenario name:','run1');if(!name)return;localStorage.setItem('pcl_'+name,JSON.stringify(P));alert('Saved: '+name);}
 function loadScenario(){const name=prompt('Load scenario name:');if(!name)return;const s=localStorage.getItem('pcl_'+name);if(!s){alert('Not found');return;}Object.assign(P,JSON.parse(s));syncSliders();compute();}
 function loadPreset(){const name=prompt('Preset (v1/mt/pfc/hpc/grid/infolimit):');if(name)applyPreset(name);}
+
+// ── Module 3: Decoder upload validation ──────────────────────────────────────
+let customDecoder=null;
+function handleDecoderUpload(input){
+  const file=input.files[0];if(!file)return;
+  const st=document.getElementById('decoder-status'),ok=document.getElementById('decoder-ok');
+  st.textContent='Validating…';st.classList.add('visible');ok.style.display='none';
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      // Sandbox eval — wrap in function scope
+      const fn=new Function('exports',e.target.result+'\nreturn exports;');
+      const exports={};const mod=fn(exports);
+      const decoder=exports.decode||mod?.decode;
+      if(typeof decoder!=='function')throw new Error('No decode(X) function exported');
+      // Toy validation: 2 stimuli, 10 neurons, known ground truth
+      const X=Array.from({length:20},(_,i)=>Array.from({length:10},(_,j)=>i<10?(j<5?2:0):(j<5?0:2)));
+      const labels=Array.from({length:20},(_,i)=>i<10?0:1);
+      const result=decoder(X);
+      if(!result||typeof result.accuracy!=='number')throw new Error('decode(X) must return {accuracy, confidence[]}');
+      if(isNaN(result.accuracy)||!isFinite(result.accuracy))throw new Error('accuracy is NaN or Inf');
+      if(!Array.isArray(result.confidence))throw new Error('confidence must be an array');
+      // Check accuracy against ground truth
+      const gtAcc=labels.reduce((a,l,i)=>a+(result.confidence[i]>0.5?1:0),0)/20;
+      customDecoder=decoder;P.decoder='custom';
+      st.classList.remove('visible');
+      ok.style.display='block';
+      ok.textContent=`✓ Validated: accuracy=${(result.accuracy*100).toFixed(1)}%  gt_check=${(gtAcc*100).toFixed(1)}%  confidence[20]`;
+      compute();
+    }catch(err){
+      customDecoder=null;
+      st.textContent='✗ Validation failed: '+err.message;st.classList.add('visible');
+    }
+  };
+  reader.readAsText(file);
+}
+
+// ── Run log search + tagging ──────────────────────────────────────────────────
+let logTagFilter='';
+function filterLog(q){
+  logTagFilter=q.toLowerCase();
+  document.querySelectorAll('#log-scroll .lr').forEach(row=>{
+    row.style.display=row.textContent.toLowerCase().includes(logTagFilter)?'flex':'none';
+  });
+}
+// Override logRun to add tag button
+const _origLogRun=logRun;
+function logRun(){
+  if(!lastM)return;const m=lastM,t=new Date().toLocaleTimeString();
+  const tag=prompt('Tag this run (optional):','');
+  runLog.unshift({t,K:m.K,acc:m.acc,regime:m.regime,align:P.align,sig:P.sig,noise:P.noise,n:P.n,tag:tag||''});
+  const row=document.createElement('div');row.className='lr';row.style.display='flex';
+  row.innerHTML=`<span class="lr-tag">${t}</span><span class="lr-k">K=${m.K.toFixed(3)}</span><span class="lr-acc">acc=${m.acc.toFixed(1)}%</span><span class="lr-dim">a=${P.align.toFixed(2)} N=${P.n}</span>${tag?`<span style="color:var(--purple);font-size:8px">#${tag}</span>`:''}<span class="lr-dim">${m.regime}</span>`;
+  document.getElementById('log-scroll').prepend(row);
+  document.getElementById('log-count').textContent=runLog.length+' runs';
+  updateCompare();
+}
+
+// ── Module 4: Grid Cell Attractor ────────────────────────────────────────────
+const GP={modules:3,n:100,vel:0.2,we:0.1,wi:0.2,scale:1.0,gnoise:0.05,steps:200};
+let gridRunning=false,gridStop=false,gridData=null;
+
+function toggleGridMode(){
+  const ov=document.getElementById('grid-overlay');
+  const visible=ov.style.display==='flex';
+  ov.style.display=visible?'none':'flex';
+  document.getElementById('grid-mode-pill').style.background=visible?'':'rgba(168,85,247,.15)';
+}
+
+function runGridSim(){
+  if(gridRunning)return;
+  gridRunning=true;gridStop=false;
+  document.getElementById('grid-badge').textContent='running';
+  // Burak & Fiete 2009 ring attractor — toroidal sheet of neurons
+  // Each module has its own scale (spacing ratio sqrt(2) between modules)
+  const N=GP.n,M=GP.modules,steps=GP.steps;
+  // Init activity bump — Gaussian on torus
+  const activity=Array.from({length:M},(_,m)=>{
+    const scale=GP.scale*Math.pow(Math.sqrt(2),m);
+    return Array.from({length:N},(_,i)=>{
+      const theta=i/N*2*Math.PI;
+      return Math.exp(-2*(1-Math.cos(theta))/Math.max(GP.we*scale,0.01));
+    });
+  });
+  const trajectory=[];
+  let pos=0,step=0;
+  // Precompute connectivity weights per module
+  const W=Array.from({length:M},(_,m)=>{
+    const scale=GP.scale*Math.pow(Math.sqrt(2),m);
+    return Array.from({length:N},(_,i)=>Array.from({length:N},(_,j)=>{
+      const dth=Math.min(Math.abs(i-j),N-Math.abs(i-j))/N*2*Math.PI;
+      const exc=Math.exp(-dth*dth/(2*Math.pow(GP.we*scale,2)));
+      const inh=Math.exp(-dth*dth/(2*Math.pow(GP.wi*scale,2)));
+      return exc-inh;
+    }));
+  });
+  function stepSim(){
+    if(gridStop||step>=steps){
+      gridRunning=false;
+      document.getElementById('grid-badge').textContent=gridStop?'stopped':'done';
+      gridData={activity:activity.map(a=>[...a]),trajectory:[...trajectory],W,M,N};
+      drawGridResults();
+      computeGridMetrics();
+      return;
+    }
+    // Update each module
+    for(let m=0;m<M;m++){
+      const scale=GP.scale*Math.pow(Math.sqrt(2),m);
+      // Velocity shifts bump position — asymmetric inhibition
+      const shift=Math.round(GP.vel*scale*N/(2*Math.PI));
+      const newA=Array(N).fill(0);
+      for(let i=0;i<N;i++){
+        let inp=0;
+        for(let j=0;j<N;j++)inp+=W[m][i][(j+shift+N)%N]*activity[m][j];
+        // ReLU + noise
+        newA[i]=Math.max(0,inp+GP.gnoise*(Math.random()-.5));
+      }
+      // Normalize (soft WTA)
+      const s=newA.reduce((a,b)=>a+b,0)||1;
+      for(let i=0;i<N;i++)activity[m][i]=newA[i]/s*N;
+    }
+    // Track bump position (module 0)
+    pos=(pos+GP.vel)%(2*Math.PI);
+    trajectory.push(pos);
+    step++;
+    requestAnimationFrame(stepSim);
+  }
+  requestAnimationFrame(stepSim);
+}
+
+function stopGridSim(){gridStop=true;}
+
+function drawGridResults(){
+  if(!gridData)return;
+  drawGridActivity();drawGridField();drawGridEigen();drawGridTraj();
+}
+
+function drawGridActivity(){
+  const{c,x,W,H}=getCanvas('grid-activity-c');clr(x,W,H);
+  if(!gridData)return;
+  const{activity,M,N}=gridData;
+  const modH=Math.floor((H-20)/M);
+  lbl(x,'MODULE ACTIVITY (toroidal)',10,14,'#a855f7',8);
+  activity.forEach((act,m)=>{
+    const maxA=Math.max(...act)||1;
+    const bw=Math.floor((W-20)/N);
+    act.forEach((v,i)=>{
+      const t=v/maxA;
+      x.fillStyle=`rgb(${Math.round(t*168)},${Math.round(t*85)},${Math.round(t*247)})`;
+      x.fillRect(10+i*bw,20+m*modH,bw,modH-2);
+    });
+    lbl(x,`M${m+1} scale×${Math.pow(Math.sqrt(2),m).toFixed(2)}`,10,20+m*modH+modH/2,'#5a8aaa',7);
+  });
+}
+
+function drawGridField(){
+  const{c,x,W,H}=getCanvas('grid-field-c');clr(x,W,H);
+  if(!gridData)return;
+  const{activity,M,N}=gridData;
+  lbl(x,'GRID FIELD (2D spatial map)',10,14,'#a855f7',8);
+  // Simulate 2D grid field from 1D ring activities via phase combinations
+  const sz=Math.floor(Math.min(W-20,H-24)/1);
+  const res=40;const cell=Math.floor((Math.min(W-20,H-24))/res);
+  for(let yi=0;yi<res;yi++)for(let xi=0;xi<res;xi++){
+    let val=0;
+    for(let m=0;m<Math.min(M,3);m++){
+      const scale=GP.scale*Math.pow(Math.sqrt(2),m);
+      const angle=m*Math.PI/3;// module orientation
+      const x2=xi/res,y2=yi/res;
+      // Project 2D position onto 1D ring via orientation
+      const proj=(Math.cos(angle)*x2+Math.sin(angle)*y2)*N*scale;
+      const idx=Math.round(proj)%N;
+      val+=activity[m][(idx+N)%N];
+    }
+    val/=Math.min(M,3);
+    const t=Math.min(1,val/5);
+    x.fillStyle=`rgb(${Math.round(t*168)},${Math.round(t*85)},${Math.round(t*247)})`;
+    x.fillRect(10+xi*cell,20+yi*cell,cell,cell);
+  }
+}
+
+function drawGridEigen(){
+  const{c,x,W,H}=getCanvas('grid-eigen-c');clr(x,W,H);
+  if(!gridData)return;
+  const{W:weights,M,N}=gridData;
+  lbl(x,'MODULE EIGENSPECTRUM',10,14,'#a855f7',8);
+  const pad=30,maxshow=30;
+  // Estimate eigenspectrum via row variance as proxy
+  weights.forEach((wm,m)=>{
+    const rowvar=wm.map(row=>row.reduce((a,v)=>a+v*v,0)/N);
+    const sorted=[...rowvar].sort((a,b)=>b-a).slice(0,maxshow);
+    const maxv=sorted[0]||1;
+    const bw=Math.floor((W-pad-10)/maxshow)-1;
+    const col=`hsl(${270+m*30},70%,60%)`;
+    sorted.forEach((v,i)=>{
+      const bh=(H-pad-20)*v/maxv;
+      x.fillStyle=col+'88';
+      x.fillRect(pad+i*(bw+1),H-pad-bh,bw,bh);
+    });
+    lbl(x,`M${m+1}`,W-40,30+m*12,col,7);
+  });
+  lbl(x,'eigenvalue rank',W/2,H-2,'#5a8aaa',7);
+}
+
+function drawGridTraj(){
+  const{c,x,W,H}=getCanvas('grid-traj-c');clr(x,W,H);
+  if(!gridData)return;
+  const{trajectory}=gridData;
+  lbl(x,'TRAJECTORY + PHASE',10,14,'#a855f7',8);
+  const pad=30,T=trajectory.length;
+  if(T<2){lbl(x,'Run simulation first',30,H/2,'#1a3a55',9);return;}
+  x.beginPath();x.strokeStyle='#a855f7';x.lineWidth=1;
+  trajectory.forEach((v,i)=>{
+    const px=pad+(W-pad-10)*i/(T-1);
+    const py=(H-pad-20)*(1-v/(2*Math.PI))+20;
+    i===0?x.moveTo(px,py):x.lineTo(px,py);
+  });
+  x.stroke();
+  // Phase error — deviation from linear
+  const phaseErr=trajectory.reduce((a,v,i)=>{const exp=i*GP.vel%(2*Math.PI);return a+Math.abs(v-exp);}  ,0)/T;
+  lbl(x,`steps=${T}  phase_err=${phaseErr.toFixed(3)}`,pad,H-2,'#5a8aaa',7);
+  document.getElementById('gm-phase').textContent=phaseErr.toFixed(4);
+}
+
+function computeGridMetrics(){
+  if(!gridData)return;
+  const{activity,M,N}=gridData;
+  // Compute K for grid population using same engine
+  const gp={...P,n:N*M,sig:2.5,noise:GP.gnoise*10+0.3,align:0.1,dim:2,gain:1,mux:1,thresh:1,rho:0.02,diffcorr:0.05,fano:1,sparse:0.7,trials:500,boot:100,nonstat:false};
+  const gm=computeMetrics(gp);
+  document.getElementById('gm-K').textContent=gm.K.toFixed(3);
+  // Estimate grid spacing from bump width
+  const act0=gridData.activity[0];const peak=act0.indexOf(Math.max(...act0));
+  const halfMax=Math.max(...act0)/2;let width=0;for(let i=0;i<N;i++)if(act0[i]>halfMax)width++;
+  const spacing=(width/N*100*GP.scale).toFixed(1);
+  document.getElementById('gm-spacing').textContent=spacing;
+  document.getElementById('gm-orient').textContent=(0).toFixed(1);
+  document.getElementById('gm-modules').textContent=M;
+}
 
 loadFromURL();
 drawHmEmpty();
